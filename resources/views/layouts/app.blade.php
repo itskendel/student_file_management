@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+{{-- Theme state is a single class on <html>: `dark` (default) or `light`.
+     See the THEME STATE contract in resources/css/app.css. --}}
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>File Management</title>
+    <title>Student Management</title>
 
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -18,7 +20,7 @@
 </head>
 
 <body>
-    <div class="antialiased bg-white">
+    <div class="antialiased bg-bento-canvas">
         <nav
             class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
             <div class="flex flex-wrap justify-between items-center">
@@ -40,12 +42,12 @@
                         </svg>
                         <span class="sr-only">Toggle sidebar</span>
                     </button>
-                    <a href="https://flowbite.com" class="flex items-center justify-between mr-4">
-                        <img src="https://flowbite.s3.amazonaws.com/logo.svg" class="mr-3 h-8" alt="Flowbite Logo" />
+                    <a href="">
+                        {{-- <img src="https://flowbite.s3.amazonaws.com/logo.svg" class="mr-3 h-8" alt="Flowbite Logo" /> --}}
                         <span
-                            class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Flowbite</span>
+                            class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">BCP</span>
                     </a>
-                    <form action="#" method="GET" class="hidden md:block md:pl-2">
+                    {{-- <form action="#" method="GET" class="hidden md:block md:pl-2">
                         <label for="topbar-search" class="sr-only">Search</label>
                         <div class="relative md:w-64 md:w-96">
                             <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
@@ -60,7 +62,7 @@
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                 placeholder="Search" />
                         </div>
-                    </form>
+                    </form> --}}
                 </div>
                 <div class="flex items-center lg:order-2">
                     <button type="button" data-drawer-toggle="drawer-navigation" aria-controls="drawer-navigation"
@@ -86,10 +88,10 @@
                         </svg>
                     </button>
                     <!-- Dropdown menu -->
-                    <div class="hidden overflow-hidden z-50 my-4 max-w-sm text-base list-none bg-white rounded divide-y divide-gray-100 shadow-lg dark:divide-gray-600 dark:bg-gray-700 rounded-xl"
+                    <div class="hidden overflow-hidden z-50 my-4 max-w-sm text-base list-none bg-white dark:bg-gray-800 rounded divide-y divide-gray-100 shadow-lg dark:divide-gray-600 dark:bg-gray-700 rounded-xl"
                         id="notification-dropdown">
                         <div
-                            class="block py-2 px-4 text-base font-medium text-center text-gray-700 bg-gray-50 dark:bg-gray-600 dark:text-gray-300">
+                            class="block py-2 px-4 text-base font-medium text-center text-gray-700 bg-gray-50 dark:bg-gray-700 dark:bg-gray-600 dark:text-gray-300">
                             Notifications
                         </div>
                         <div>
@@ -237,7 +239,7 @@
                             </a>
                         </div>
                         <a href="#"
-                            class="block py-2 text-md font-medium text-center text-gray-900 bg-gray-50 hover:bg-gray-100 dark:bg-gray-600 dark:text-white dark:hover:underline">
+                            class="block py-2 text-md font-medium text-center text-gray-900 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:bg-gray-600 dark:text-white dark:hover:underline">
                             <div class="inline-flex items-center">
                                 <svg aria-hidden="true" class="mr-2 w-4 h-4 text-gray-500 dark:text-gray-400"
                                     fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -263,10 +265,10 @@
                         </svg>
                     </button>
                     <!-- Dropdown menu -->
-                    <div class="hidden overflow-hidden z-50 my-4 max-w-sm text-base list-none bg-white rounded divide-y divide-gray-100 shadow-lg dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
+                    <div class="hidden overflow-hidden z-50 my-4 max-w-sm text-base list-none bg-white dark:bg-gray-800 rounded divide-y divide-gray-100 shadow-lg dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
                         id="apps-dropdown">
                         <div
-                            class="block py-2 px-4 text-base font-medium text-center text-gray-700 bg-gray-50 dark:bg-gray-600 dark:text-gray-300">
+                            class="block py-2 px-4 text-base font-medium text-center text-gray-700 bg-gray-50 dark:bg-gray-700 dark:bg-gray-600 dark:text-gray-300">
                             Apps
                         </div>
                         <div class="grid grid-cols-3 gap-4 p-4">
@@ -397,7 +399,7 @@
                             alt="user photo" />
                     </button>
                     <!-- Dropdown menu -->
-                    <div class="hidden z-50 my-4 w-56 text-base list-none bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
+                    <div class="hidden z-50 my-4 w-56 text-base list-none bg-white dark:bg-gray-800 rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
                         id="dropdown">
                         <div class="py-3 px-4">
                             <span class="block text-sm font-semibold text-gray-900 dark:text-white">Neil Sims</span>
@@ -676,7 +678,7 @@
                     </svg>
                 </button>
                 <!-- Dropdown -->
-                <div class="hidden z-50 my-4 text-base list-none bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700"
+                <div class="hidden z-50 my-4 text-base list-none bg-white dark:bg-gray-800 rounded divide-y divide-gray-100 shadow dark:bg-gray-700"
                     id="language-dropdown">
                     <ul class="py-1" role="none">
                         <li>

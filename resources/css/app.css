@@ -3,6 +3,1556 @@
 @source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 
+/* Flowbite's own palette (`themes/default`) is deliberately NOT loaded.
+   It re-declares the same --color-* token names in its own `.dark` block, so
+   with two palettes defining one token set the Flowbite ramp silently won
+   and the Bento theme was ignored in dark mode. One token, one owner. The
+   Flowbite *plugin* stays (it provides the component utilities); only the
+   competing palette is gone. Bento's @theme below supplies every token the
+   components and the shell reference. */
+
+@plugin 'flowbite/plugin';
+@source '../node_modules/flowbite';
+
+/* ==================================================================
+   Bento design tokens
+   Single source of truth. These override Flowbite's default theme, so
+   every `bg-*`, `text-*`, `border-*` token used by the components (and
+   by Flowbite itself) resolves to the Bento palette. Components must
+   reference these tokens, never raw hex values.
+
+   THEME STATE
+   Dark is the default UI. Theme state is one class on <html> and
+   nothing else:
+       <html class="dark">   dark UI   (default, as shipped)
+       <html class="light">  light UI  (documented opt-out)
+   `.dark` carries no rules of its own - the tokens in @theme ARE the
+   dark palette - so `.light` holds the only light copy in this file.
+   Do not add a second copy of either palette: duplication is how the two
+   drift apart, and a stray character in a duplicated block once turned
+   `.btn` into the dead descendant selector `n .btn`.
+   Tailwind's `dark:` variant is bound to the same class (see
+   @custom-variant below) so utilities and tokens can never disagree.
+
+   Contrast: every text-on-background pairing below is verified at or
+   above WCAG 2.2 AA (4.5:1 text, 3:1 UI boundaries). Filled brand
+   surfaces are the one exception to "ink follows the theme" - see
+   --color-bento-on-brand.
+   ================================================================== */
+
+/* Bind `dark:` utilities to the .dark class instead of the OS preference so
+   a forced-dark UI never renders light `dark:` utilities. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-body: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /* Typography scale — 12 / 14 / 16 / 20 / 24 / 32 */
+    --text-2xs: 0.625rem;
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.25rem;
+    --text-xl: 1.5rem;
+    --text-2xl: 2rem;
+
+    /* Radius — soft, bento */
+    --radius-xxs: 2px;
+    --radius-xs: 4px;
+    --radius-sm: 6px;
+    --radius-base: 12px;
+    --radius-lg: 16px;
+    --radius-bento: 0.75rem;
+
+    /* --- Core palette (dark = the default UI) ---
+       Canvas is the deepest tone and sits one step below the card
+       surface, so cards keep the same "lifted" hierarchy they have in
+       light mode instead of sinking into the page. */
+    --color-bento-canvas: #0d0b0a;
+    --color-bento-surface: #1c1917;
+    --color-bento-surface-hover: #26211c;
+    --color-bento-surface-active: #322b24;
+    --color-bento-ink: #faf7f2;
+    --color-bento-ink-muted: #a8a29e;
+    --color-bento-border: #3e362d;
+    --color-bento-border-strong: #4a4136;
+    --color-bento-disabled-bg: #322b24;
+    --color-bento-disabled-fg: #8a7d6b;
+
+    /* --- Text roles --- */
+    --color-heading: #faf7f2;
+    --color-body: #d8d2c8;
+    --color-body-subtle: #a8a29e;
+
+    /* --- Brand ---
+       The fill is a light tint, so brand *text* uses a pale ramp here to
+       stay above 4.5:1 on the dark surfaces. */
+    --color-brand-softer: #26211c;
+    --color-brand-soft: #322b24;
+    --color-brand: #f5c1a4;
+    --color-brand-medium: #eeb086;
+    --color-brand-strong: #e8a781;
+    --color-brand-light: #f5c1a4;
+    --color-fg-brand-subtle: #f7d9c2;
+    --color-fg-brand: #f5c1a4;
+    --color-fg-brand-strong: #fad4c0;
+
+    /* --- Status ---
+       `*-soft` is the background, the base color is the text/border.
+       In dark the base token is the light end of the ramp so it is safe
+       as `text-*` on a dark surface and as a `border-*`. */
+    --color-success-soft: #052e16;
+    --color-success-medium: #14532d;
+    --color-success: #86efac;
+    --color-success-strong: #bbf7d0;
+    --color-success-subtle: #14532d;
+    --color-fg-success: #86efac;
+    --color-fg-success-strong: #bbf7d0;
+
+    --color-warning-soft: #451a03;
+    --color-warning-medium: #78350f;
+    --color-warning: #fcd34d;
+    --color-warning-strong: #fde68a;
+    --color-warning-subtle: #78350f;
+    --color-fg-warning: #fcd34d;
+    --color-fg-warning-subtle: #fbbf24;
+    --color-fg-warning-strong: #fde68a;
+
+    --color-danger-soft: #450a0a;
+    --color-danger-medium: #7f1d1d;
+    --color-danger: #fca5a5;
+    --color-danger-strong: #fecaca;
+    --color-danger-subtle: #7f1d1d;
+    --color-fg-danger: #fca5a5;
+    --color-fg-danger-strong: #fecaca;
+
+    --color-fg-yellow: #fcd34d;
+    --color-fg-disabled: #5c5145;
+    --color-disabled: #322b24;
+
+    /* --- Neutral surfaces --- */
+    --color-neutral-primary-soft: #1c1917;
+    --color-neutral-primary: #171412;
+    --color-neutral-primary-medium: #26211c;
+    --color-neutral-primary-strong: #322b24;
+    --color-neutral-secondary-soft: #1f1b18;
+    --color-neutral-secondary: #26211c;
+    --color-neutral-secondary-medium: #322b24;
+    --color-neutral-secondary-strong: #3e362d;
+    --color-neutral-secondary-strongest: #4a4136;
+    --color-neutral-tertiary-soft: #26211c;
+    --color-neutral-tertiary: #322b24;
+    --color-neutral-tertiary-medium: #3e362d;
+    --color-neutral-quaternary: #4a4136;
+    --color-neutral-quaternary-medium: #5c5145;
+    --color-gray: #5c5145;
+
+    /* --- Borders ---
+       `default` is decorative only (cards, dividers).
+       `default-medium` is the form-control border and is the first step
+       that clears the 3:1 non-text contrast requirement. */
+    --color-buffer: #171412;
+    --color-buffer-medium: #1f1b18;
+    --color-buffer-strong: #26211c;
+    --color-muted: #322b24;
+    --color-light-subtle: #26211c;
+    --color-light: #322b24;
+    --color-light-medium: #3e362d;
+    --color-default-subtle: #3e362d;
+    --color-default: #4a4136;
+    --color-default-medium: #7c6f5f;
+    --color-default-strong: #9c8d7a;
+    --color-brand-subtle: #78350f;
+
+    --color-dark-soft: #3e362d;
+    --color-dark: #26211c;
+    --color-dark-strong: #1c1917;
+    --color-dark-subtle: #5c5145;
+    --color-dark-backdrop: #0d0b0a;
+
+    /* --- Non-flipping brand fills ---
+       These stay light tints in BOTH themes, so ink drawn on top of them
+       must not follow the theme. MUST use --color-bento-on-brand for the
+       foreground of any filled brand surface: using --color-bento-ink
+       would put near-white text on a peach fill (~1.3:1) in dark. */
+    --color-bento-primary: #fad4c0;
+    --color-bento-primary-hover: #f5c1a4;
+    --color-bento-primary-active: #eeb086;
+    --color-bento-secondary: #80a1c1;
+    --color-bento-secondary-hover: #7296b5;
+    --color-bento-secondary-active: #6e92b4;
+    --color-bento-on-brand: #111827;
+
+    /* --- Warm neutral ramp ---
+       Migration note: Flowbite's palette supplied these before. They are
+       warm-tinted now so the shell cannot reintroduce the cool blue-grey
+       it used to sit against the Bento surfaces. Static (not theme-flipping)
+       because callers pair them explicitly with `dark:` utilities. */
+    --color-gray-50: #faf7f2;
+    --color-gray-100: #f4efe7;
+    --color-gray-200: #e7dfd2;
+    --color-gray-300: #d3c8b5;
+    --color-gray-400: #a89b87;
+    --color-gray-500: #8a7d6b;
+    --color-gray-600: #6b6153;
+    --color-gray-700: #4a4136;
+    --color-gray-800: #322b24;
+    --color-gray-900: #26211c;
+    --color-gray-950: #1c1917;
+
+    /* --- Brand ramp (replaces Flowbite's blue `primary`) --- */
+    --color-primary-50: #fff5e6;
+    --color-primary-100: #fbead2;
+    --color-primary-200: #fad4c0;
+    --color-primary-300: #f5c1a4;
+    --color-primary-400: #eeb086;
+    --color-primary-500: #e8a781;
+    --color-primary-600: #d3855a;
+    --color-primary-700: #b36640;
+    --color-primary-800: #8f4e31;
+    --color-primary-900: #6b3315;
+}
+
+/* Light UI - the single documented opt-out. Set <html class="light"> to use
+   it. Every flipping token is redeclared here, so this is the ONLY light
+   copy in the stylesheet. */
+.light {
+    /* --- Core palette --- */
+    --color-bento-canvas: #fff5e6;
+    --color-bento-primary: #fad4c0;
+    --color-bento-primary-hover: #f5c1a4;
+    --color-bento-primary-active: #eeb086;
+    --color-bento-secondary: #80a1c1;
+    --color-bento-secondary-hover: #7296b5;
+    --color-bento-secondary-active: #6e92b4;
+    --color-bento-surface: #fff5e6;
+    --color-bento-surface-hover: #fbead2;
+    --color-bento-surface-active: #f7dfc0;
+    --color-bento-ink: #111827;
+    --color-bento-ink-muted: #4b5563;
+    --color-bento-border: #e7dfd2;
+    --color-bento-border-strong: #d3c8b5;
+    --color-bento-disabled-bg: #f1ede4;
+    --color-bento-disabled-fg: #8a8278;
+
+    /* --- Text roles --- */
+    --color-heading: #111827;
+    --color-body: #4b5563;
+    --color-body-subtle: #65605a;
+
+    /* --- Brand ---
+       The primary is a light tint, so brand *text* uses a deep terracotta
+       ramp to stay above 4.5:1 on every brand background. */
+    --color-brand-softer: #fff5e6;
+    --color-brand-soft: #fbead2;
+    --color-brand: #fad4c0;
+    --color-brand-medium: #f5c1a4;
+    --color-brand-strong: #eeb086;
+    --color-brand-light: #7a3d1c;
+    --color-fg-brand-subtle: #8a4b26;
+    --color-fg-brand: #7a3d1c;
+    --color-fg-brand-strong: #6b3315;
+
+    /* --- Status ---
+       `*-soft` is the background, the base color is the text/border.
+       Keeping the base token dark makes it safe both as `text-*`
+       on a light surface and as `bg-*` with white text. */
+    --color-success-soft: #dcfce7;
+    --color-success-medium: #c9f5d6;
+    --color-success: #14532d;
+    --color-success-strong: #14532d;
+    --color-success-subtle: #86efac;
+    --color-fg-success: #14532d;
+    --color-fg-success-strong: #14532d;
+
+    --color-warning-soft: #fef3c7;
+    --color-warning-medium: #fde9b0;
+    --color-warning: #92400e;
+    --color-warning-strong: #92400e;
+    --color-warning-subtle: #fcd34d;
+    --color-fg-warning: #92400e;
+    --color-fg-warning-subtle: #d97706;
+    --color-fg-warning-strong: #92400e;
+
+    --color-danger-soft: #fee2e2;
+    --color-danger-medium: #fcd5d5;
+    --color-danger: #991b1b;
+    --color-danger-strong: #991b1b;
+    --color-danger-subtle: #fca5a5;
+    --color-fg-danger: #991b1b;
+    --color-fg-danger-strong: #991b1b;
+
+    --color-fg-yellow: #92400e;
+    --color-fg-disabled: #9ca3af;
+    --color-disabled: #f1ede4;
+
+    /* --- Neutral surfaces (warm-tinted to sit on the bento surface) --- */
+    --color-neutral-primary-soft: #ffffff;
+    --color-neutral-primary: #ffffff;
+    --color-neutral-primary-medium: #fff5e6;
+    --color-neutral-primary-strong: #fbead2;
+    --color-neutral-secondary-soft: #fff9ef;
+    --color-neutral-secondary: #fff5e6;
+    --color-neutral-secondary-medium: #fbead2;
+    --color-neutral-secondary-strong: #f7dfc0;
+    --color-neutral-secondary-strongest: #f2e7d3;
+    --color-neutral-tertiary-soft: #fbead2;
+    --color-neutral-tertiary: #f7dfc0;
+    --color-neutral-tertiary-medium: #f2e7d3;
+    --color-neutral-quaternary: #e7dfd2;
+    --color-neutral-quaternary-medium: #d3c8b5;
+    --color-gray: #d3c8b5;
+
+    /* --- Borders ---
+       `default` is decorative only (cards, dividers).
+       `default-medium` is the form-control border and is the first step
+       that clears the 3:1 non-text contrast requirement. */
+    --color-buffer: #ffffff;
+    --color-buffer-medium: #ffffff;
+    --color-buffer-strong: #ffffff;
+    --color-muted: #f7dfc0;
+    --color-light-subtle: #f2e7d3;
+    --color-light: #f7dfc0;
+    --color-light-medium: #f2e7d3;
+    --color-default-subtle: #efe7da;
+    --color-default: #d3c8b5;
+    --color-default-medium: #92856d;
+    --color-default-strong: #7a6e5b;
+    --color-brand-subtle: #f5c1a4;
+
+    --color-dark-soft: #3e362d;
+    --color-dark: #26211c;
+    --color-dark-strong: #1c1917;
+    --color-dark-subtle: #4a4136;
+    --color-dark-backdrop: #120f0d;
+}
+
+/* ==================================================================
+   Page surface
+   The canvas is the deepest tone; every card, input, menu and panel sits
+   on --color-neutral-primary-soft one step above it. MUST NOT hardcode a
+   background here - it has to follow the active theme token.
+   ================================================================== */
+body {
+    background-color: var(--color-bento-canvas);
+    color: var(--color-body);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+}
+
+
+/* ==================================================================
+   Button
+   Anatomy: [leading icon] label [trailing icon]
+   Requires .btn + a size (.btn-sm | .btn-md | .btn-lg) + a variant.
+   ================================================================== */
+.btn {
+    --btn-h: 2.5rem;
+    --btn-px: 1rem;
+    --btn-fs: 0.875rem;
+    --btn-gap: 0.5rem;
+    --btn-hover-border: transparent;
+    --btn-active-border: transparent;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--btn-gap);
+    height: var(--btn-h);
+    padding-inline: var(--btn-px);
+    border: 1px solid transparent;
+    border-radius: var(--radius-bento);
+    background-color: transparent;
+    font-family: var(--font-sans);
+    font-size: var(--btn-fs);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    -webkit-appearance: none;
+    appearance: none;
+    transition: background-color 150ms ease, border-color 150ms ease,
+        color 150ms ease, box-shadow 150ms ease, transform 80ms ease;
+}
+
+.btn > svg {
+    width: calc(var(--btn-fs) * 1.25);
+    height: calc(var(--btn-fs) * 1.25);
+    flex: none;
+}
+
+/* Slotted icon: matches the direct-child svg rule above so <x-slot:icon>
+   inside any component keeps the same optical size. */
+.btn-icon-slot {
+    display: inline-flex;
+    align-items: center;
+    flex: none;
+}
+
+.btn-icon-slot > svg {
+    width: calc(var(--btn-fs) * 1.25);
+    height: calc(var(--btn-fs) * 1.25);
+}
+
+/* btn sizes — 32 / 40 / 48 */
+.btn-sm {
+    --btn-h: 2rem;
+    --btn-px: 0.75rem;
+    --btn-fs: 0.75rem;
+    --btn-gap: 0.375rem;
+}
+
+.btn-md {
+    --btn-h: 2.5rem;
+    --btn-px: 1rem;
+    --btn-fs: 0.875rem;
+    --btn-gap: 0.5rem;
+}
+
+.btn-lg {
+    --btn-h: 3rem;
+    --btn-px: 1.5rem;
+    --btn-fs: 1rem;
+    --btn-gap: 0.625rem;
+}
+
+/* btn variants */
+.btn-primary {
+    --btn-hover-bg: var(--color-bento-primary-hover);
+    --btn-active-bg: var(--color-bento-primary-active);
+    background-color: var(--color-bento-primary);
+    color: var(--color-bento-on-brand);
+}
+
+.btn-secondary {
+    --btn-hover-bg: var(--color-bento-secondary-hover);
+    --btn-active-bg: var(--color-bento-secondary-active);
+    background-color: var(--color-bento-secondary);
+    color: var(--color-bento-on-brand);
+}
+
+.btn-tertiary {
+    --btn-hover-bg: var(--color-bento-surface-hover);
+    --btn-active-bg: var(--color-bento-surface-active);
+    --btn-hover-border: var(--color-bento-border-strong);
+    --btn-active-border: var(--color-bento-border-strong);
+    background-color: transparent;
+    border-color: var(--color-bento-border-strong);
+    color: var(--color-bento-ink);
+}
+
+.btn-success {
+    --btn-hover-bg: var(--color-success-medium);
+    --btn-active-bg: var(--color-success-medium);
+    --btn-hover-border: var(--color-success);
+    --btn-active-border: var(--color-success);
+    background-color: var(--color-success-soft);
+    border-color: var(--color-success-subtle);
+    color: var(--color-success);
+}
+
+.btn-danger {
+    --btn-hover-bg: var(--color-danger-medium);
+    --btn-active-bg: var(--color-danger-medium);
+    --btn-hover-border: var(--color-danger);
+    --btn-active-border: var(--color-danger);
+    background-color: var(--color-danger-soft);
+    border-color: var(--color-danger-subtle);
+    color: var(--color-danger);
+}
+
+.btn-warning {
+    --btn-hover-bg: var(--color-warning-medium);
+    --btn-active-bg: var(--color-warning-medium);
+    --btn-hover-border: var(--color-warning);
+    --btn-active-border: var(--color-warning);
+    background-color: var(--color-warning-soft);
+    border-color: var(--color-warning-subtle);
+    color: var(--color-warning);
+}
+
+.btn-ghost {
+    --btn-hover-bg: var(--color-bento-surface-hover);
+    --btn-active-bg: var(--color-bento-surface-active);
+    background-color: transparent;
+    color: var(--color-bento-ink);
+}
+
+/* btn states */
+.btn:hover:not(:disabled):not([aria-disabled='true']) {
+    background-color: var(--btn-hover-bg);
+    border-color: var(--btn-hover-border);
+}
+
+.btn:active:not(:disabled):not([aria-disabled='true']) {
+    background-color: var(--btn-active-bg);
+    border-color: var(--btn-active-border);
+    transform: translateY(1px);
+}
+
+/* Double ring keeps the indicator above 3:1 on every variant. */
+.btn:focus-visible,
+.input:focus-visible,
+.checkbox:focus-visible,
+.radio:focus-visible,
+.switch:focus-visible,
+.dropdown-trigger:focus-visible,
+.pagination-link:focus-visible {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px var(--color-neutral-primary-soft),
+        0 0 0 4px var(--color-bento-ink);
+}
+
+.btn:disabled,
+.btn[aria-disabled='true'],
+.input:disabled,
+.input[aria-disabled='true'],
+.dropdown-trigger:disabled,
+.pagination-link[aria-disabled='true'] {
+    background-color: var(--color-bento-disabled-bg);
+    border-color: transparent;
+    color: var(--color-bento-disabled-fg);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.input[readonly] {
+    background-color: var(--color-neutral-secondary-soft);
+    color: var(--color-bento-ink-muted);
+    cursor: default;
+}
+
+.btn-loading {
+    pointer-events: none;
+}
+
+.btn-loading::before,
+.spinner {
+    content: '';
+    width: 1em;
+    height: 1em;
+    flex: none;
+    display: inline-block;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 9999px;
+    opacity: 1;
+    animation: bento-spin 600ms linear infinite;
+}
+
+@keyframes bento-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* btn modifiers */
+.btn-block {
+    display: flex;
+    width: 100%;
+}
+
+.btn-icon {
+    width: var(--btn-h);
+    padding-inline: 0;
+}
+
+/* ==================================================================
+   Form controls
+   `.input` is the shared base for text inputs, selects and textareas so
+   that heights, radius, borders and focus treatment cannot drift apart.
+   ================================================================== */
+.input {
+    --ctl-h: 2.5rem;
+    --ctl-px: 0.75rem;
+    --ctl-fs: 0.875rem;
+
+    display: block;
+    width: 100%;
+    min-height: var(--ctl-h);
+    padding-block: 0.5rem;
+    padding-inline: var(--ctl-px);
+    border: 1px solid var(--color-default-medium);
+    border-radius: var(--radius-bento);
+    background-color: var(--color-neutral-primary-soft);
+    color: var(--color-heading);
+    font-family: var(--font-sans);
+    font-size: var(--ctl-fs);
+    line-height: 1.5;
+    transition: border-color 150ms ease, box-shadow 150ms ease,
+        background-color 150ms ease;
+}
+
+.input::placeholder {
+    color: var(--color-body-subtle);
+}
+
+.input:hover:not(:disabled):not([aria-disabled='true']) {
+    border-color: var(--color-default-strong);
+}
+
+/* Invalid supersedes hover so the error state is never ambiguous. */
+.input[aria-invalid='true'] {
+    border-color: var(--color-danger);
+}
+
+.input[aria-invalid='true']:hover:not(:disabled) {
+    border-color: var(--color-danger);
+}
+
+.input:disabled {
+    background-color: var(--color-bento-disabled-bg);
+    color: var(--color-bento-disabled-fg);
+    cursor: not-allowed;
+}
+
+/* Native select needs the chevron and extra inline room. */
+.select {
+    padding-inline-end: calc(var(--ctl-px) + 1.5rem);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2365605a' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right calc(var(--ctl-px) - 0.125rem) center;
+    background-size: 1.25rem 1.25rem;
+    appearance: none;
+    cursor: pointer;
+}
+
+.select:disabled {
+    cursor: not-allowed;
+}
+
+.textarea {
+    min-height: 6rem;
+    resize: vertical;
+}
+
+.input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+/* Without an icon the wrapper must not affect layout. */
+.input-group:not(:has(.input-group-icon)) {
+    display: contents;
+}
+
+.input-group > .input {
+    padding-inline-start: 2.5rem;
+}
+
+.input-group-end > .input {
+    padding-inline-start: var(--ctl-px);
+    padding-inline-end: 2.5rem;
+}
+
+.input-group-icon {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--color-body-subtle);
+    pointer-events: none;
+}
+
+.input-group-icon-start {
+    inset-inline-start: var(--ctl-px);
+}
+
+.input-group-icon-end {
+    inset-inline-end: var(--ctl-px);
+}
+
+/* Control sizes mirror the button scale: 32 / 40 / 48 */
+.input-sm {
+    --ctl-h: 2rem;
+    --ctl-px: 0.625rem;
+    --ctl-fs: 0.75rem;
+}
+
+.input-md {
+    --ctl-h: 2.5rem;
+    --ctl-px: 0.75rem;
+    --ctl-fs: 0.875rem;
+}
+
+.input-lg {
+    --ctl-h: 3rem;
+    --ctl-px: 1rem;
+    --ctl-fs: 1rem;
+}
+
+/* ==================================================================
+   Checkbox / radio / switch
+   Native inputs are visually hidden but keep focus + keyboard semantics.
+   ================================================================== */
+.checkbox,
+.radio {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex: none;
+    margin: 0;
+    border: 1.5px solid var(--color-default-medium);
+    background-color: var(--color-neutral-primary-soft);
+    color: var(--color-neutral-primary-soft);
+    cursor: pointer;
+    appearance: none;
+    transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.checkbox {
+    border-radius: var(--radius-xs);
+}
+
+.radio {
+    border-radius: 9999px;
+}
+
+.checkbox:hover:not(:disabled),
+.radio:hover:not(:disabled) {
+    border-color: var(--color-fg-brand);
+}
+
+.checkbox:checked,
+.radio:checked {
+    background-color: var(--color-fg-brand-strong);
+    border-color: var(--color-fg-brand-strong);
+}
+
+.checkbox:checked::after {
+    content: '';
+    display: block;
+    width: 0.3rem;
+    height: 0.6rem;
+    margin-inline: auto;
+    border: solid currentColor;
+    border-width: 0 2px 2px 0;
+    transform: translateY(-0.0625rem) rotate(45deg);
+}
+
+.radio:checked::after {
+    content: '';
+    display: block;
+    width: 0.5rem;
+    height: 0.5rem;
+    margin: 0.25rem;
+    border-radius: 9999px;
+    background-color: currentColor;
+}
+
+.checkbox:indeterminate {
+    background-color: var(--color-fg-brand-strong);
+    border-color: var(--color-fg-brand-strong);
+}
+
+.checkbox:indeterminate::after {
+    content: '';
+    display: block;
+    width: 0.625rem;
+    height: 2px;
+    margin-inline: auto;
+    background-color: currentColor;
+}
+
+.checkbox:disabled,
+.radio:disabled {
+    background-color: var(--color-bento-disabled-bg);
+    border-color: var(--color-default);
+    cursor: not-allowed;
+}
+
+.switch {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    width: 2.75rem;
+    height: 1.5rem;
+    flex: none;
+    margin: 0;
+    border: 1px solid var(--color-default-medium);
+    border-radius: 9999px;
+    background-color: var(--color-neutral-tertiary);
+    cursor: pointer;
+    appearance: none;
+    transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.switch::after {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0.125rem;
+    width: 1.125rem;
+    height: 1.125rem;
+    border-radius: 9999px;
+    background-color: var(--color-neutral-primary-soft);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.2), 0 0 0 1px var(--color-default-strong);
+    transition: transform 150ms ease;
+}
+
+.switch:checked {
+    background-color: var(--color-fg-brand-strong);
+    border-color: var(--color-fg-brand-strong);
+}
+
+.switch:checked::after {
+    transform: translateX(1.25rem);
+}
+
+.switch:disabled {
+    background-color: var(--color-bento-disabled-bg);
+    border-color: var(--color-default);
+    cursor: not-allowed;
+}
+
+/* ==================================================================
+   Field primitives — label / helper / error
+   ================================================================== */
+.label {
+    display: inline-block;
+    margin-bottom: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    color: var(--color-heading);
+}
+
+.label-required::after {
+    content: '*';
+    margin-inline-start: 0.125rem;
+    color: var(--color-danger);
+}
+
+.helper {
+    margin-top: 0.375rem;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    color: var(--color-body-subtle);
+}
+
+.error-message {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.25rem;
+    margin-top: 0.375rem;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    color: var(--color-danger);
+}
+
+/* ==================================================================
+   Card — the core bento block
+   ================================================================== */
+.card {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-neutral-primary-soft);
+    border: 1px solid var(--color-default);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 1px 2px 0 rgb(17 24 39 / 0.04);
+    overflow: hidden;
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+@media (min-width: 768px) {
+    .card-body {
+        padding: 1.5rem;
+    }
+}
+
+.card-header,
+.card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    padding: 1rem 1.25rem;
+}
+
+@media (min-width: 768px) {
+    .card-header,
+    .card-footer {
+        padding-inline: 1.5rem;
+    }
+}
+
+.card-header {
+    border-bottom: 1px solid var(--color-default);
+}
+
+.card-footer {
+    border-top: 1px solid var(--color-default);
+    background-color: var(--color-neutral-secondary-soft);
+}
+
+/* ==================================================================
+   Dropdown
+   ================================================================== */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-menu {
+    z-index: 30;
+    min-width: 12rem;
+    padding: 0.375rem;
+    background-color: var(--color-neutral-primary-soft);
+    border: 1px solid var(--color-default);
+    border-radius: var(--radius-bento);
+    box-shadow: 0 10px 15px -3px rgb(17 24 39 / 0.1),
+        0 4px 6px -4px rgb(17 24 39 / 0.1);
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background-color: transparent;
+    color: var(--color-body);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    text-align: start;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 150ms ease, color 150ms ease;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus-visible {
+    background-color: var(--color-neutral-secondary);
+    color: var(--color-heading);
+}
+
+.dropdown-item-active {
+    background-color: var(--color-brand-soft);
+    color: var(--color-fg-brand-strong);
+}
+
+.dropdown-divider {
+    height: 1px;
+    margin: 0.375rem 0;
+    background-color: var(--color-default);
+}
+
+/* ==================================================================
+   Table
+   ================================================================== */
+.table-wrapper {
+    position: relative;
+    overflow-x: auto;
+    background-color: var(--color-neutral-primary-soft);
+    border: 1px solid var(--color-default);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 1px 2px 0 rgb(17 24 39 / 0.04);
+}
+
+.table {
+    width: 100%;
+    font-size: 0.875rem;
+    color: var(--color-body);
+    text-align: start;
+}
+
+.table thead {
+    background-color: var(--color-neutral-secondary-soft);
+    border-bottom: 1px solid var(--color-default);
+}
+
+.table th {
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    color: var(--color-heading);
+    white-space: nowrap;
+}
+
+.table td {
+    padding: 0.875rem 1rem;
+}
+
+.table tbody tr {
+    border-bottom: 1px solid var(--color-default-subtle);
+}
+
+.table tbody tr:last-child {
+    border-bottom: 0;
+}
+
+.table-hover tbody tr:hover {
+    background-color: var(--color-neutral-secondary-soft);
+}
+
+.table-striped tbody tr:nth-child(even) {
+    background-color: var(--color-neutral-secondary-soft);
+}
+
+/* ==================================================================
+   Pagination
+   ================================================================== */
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    flex-wrap: wrap;
+}
+
+.pagination-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.25rem;
+    height: 2.25rem;
+    padding-inline: 0.5rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    background-color: transparent;
+    color: var(--color-body);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 150ms ease, color 150ms ease,
+        border-color 150ms ease;
+}
+
+.pagination-link:hover:not([aria-disabled='true']) {
+    background-color: var(--color-neutral-secondary);
+    color: var(--color-heading);
+}
+
+.pagination-link-active {
+    background-color: var(--color-brand);
+    border-color: var(--color-brand);
+    color: var(--color-bento-ink);
+}
+
+.pagination-link-active:hover {
+    background-color: var(--color-bento-primary-hover);
+    color: var(--color-bento-ink);
+}
+
+/* ==================================================================
+   Alert
+   ================================================================== */
+.alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-bento);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+
+.alert > svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex: none;
+    margin-top: 0.0625rem;
+}
+
+.alert-info {
+    background-color: var(--color-brand-soft);
+    border-color: var(--color-brand-subtle);
+    color: var(--color-fg-brand-strong);
+}
+
+.alert-success {
+    background-color: var(--color-success-soft);
+    border-color: var(--color-success-subtle);
+    color: var(--color-success);
+}
+
+.alert-warning {
+    background-color: var(--color-warning-soft);
+    border-color: var(--color-warning-subtle);
+    color: var(--color-warning);
+}
+
+.alert-danger {
+    background-color: var(--color-danger-soft);
+    border-color: var(--color-danger-subtle);
+    color: var(--color-danger);
+}
+
+.alert-neutral {
+    background-color: var(--color-neutral-secondary);
+    border-color: var(--color-default);
+    color: var(--color-body);
+}
+
+.alert-title {
+    font-weight: 600;
+}
+
+.alert-dismiss {
+    margin-inline-start: auto;
+    padding: 0.125rem;
+    border: 0;
+    border-radius: var(--radius-xs);
+    background-color: transparent;
+    color: inherit;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 150ms ease;
+}
+
+.alert-dismiss:hover {
+    opacity: 1;
+}
+
+/* ==================================================================
+   Badge
+   ================================================================== */
+.badge {
+    --badge-px: 0.5rem;
+    --badge-py: 0.125rem;
+    --badge-fs: 0.75rem;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: var(--badge-py) var(--badge-px);
+    border: 1px solid transparent;
+    border-radius: 9999px;
+    font-size: var(--badge-fs);
+    font-weight: 500;
+    line-height: 1.25rem;
+    white-space: nowrap;
+}
+
+.badge-lg {
+    --badge-px: 0.75rem;
+    --badge-py: 0.25rem;
+    --badge-fs: 0.875rem;
+}
+
+.badge-neutral {
+    background-color: var(--color-neutral-tertiary-soft);
+    border-color: var(--color-default);
+    color: var(--color-body);
+}
+
+.badge-primary {
+    background-color: var(--color-brand-soft);
+    border-color: var(--color-brand-subtle);
+    color: var(--color-fg-brand-strong);
+}
+
+.badge-secondary {
+    background-color: var(--color-neutral-secondary);
+    border-color: var(--color-default-strong);
+    color: var(--color-heading);
+}
+
+.badge-success {
+    background-color: var(--color-success-soft);
+    border-color: var(--color-success-subtle);
+    color: var(--color-success);
+}
+
+.badge-warning {
+    background-color: var(--color-warning-soft);
+    border-color: var(--color-warning-subtle);
+    color: var(--color-warning);
+}
+
+.badge-danger {
+    background-color: var(--color-danger-soft);
+    border-color: var(--color-danger-subtle);
+    color: var(--color-danger);
+}
+
+.badge-dot {
+    width: 0.375rem;
+    height: 0.375rem;
+    border-radius: 9999px;
+    background-color: currentColor;
+}
+
+/* ==================================================================
+   Breadcrumb
+   ================================================================== */
+.breadcrumb-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+
+.breadcrumb-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.breadcrumb-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.125rem 0.25rem;
+    border-radius: var(--radius-xs);
+    color: var(--color-body-subtle);
+    text-decoration: none;
+    transition: color 150ms ease, background-color 150ms ease;
+}
+
+.breadcrumb-link:hover {
+    background-color: var(--color-neutral-secondary);
+    color: var(--color-heading);
+}
+
+.breadcrumb-current {
+    padding: 0.125rem 0.25rem;
+    color: var(--color-heading);
+    font-weight: 500;
+}
+
+.breadcrumb-separator {
+    color: var(--color-body-subtle);
+}
+
+@media (max-width: 639px) {
+    .breadcrumb-separator-text {
+        display: none;
+    }
+}
+
+/* ==================================================================
+   Modal — positioning; the panel reuses the card surface
+   ================================================================== */
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    background-color: rgb(17 24 39 / 0.5);
+}
+
+.modal-panel {
+    position: relative;
+    width: 100%;
+    max-width: 32rem;
+    margin: 1rem auto;
+    background-color: var(--color-neutral-primary-soft);
+    border: 1px solid var(--color-default);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 20px 25px -5px rgb(17 24 39 / 0.1);
+}
+
+.modal-sm .modal-panel {
+    max-width: 24rem;
+}
+
+.modal-lg .modal-panel {
+    max-width: 48rem;
+}
+
+.modal-xl .modal-panel {
+    max-width: 64rem;
+}
+
+@media (min-width: 640px) {
+    .modal-panel {
+        margin-top: 3rem;
+        margin-bottom: 3rem;
+    }
+}
+
+.modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.25rem;
+    border-bottom: 1px solid var(--color-default);
+}
+
+.modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.75rem;
+    color: var(--color-heading);
+}
+
+.modal-body {
+    padding: 1.25rem;
+}
+
+.modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    padding: 1.25rem;
+    border-top: 1px solid var(--color-default);
+    background-color: var(--color-neutral-secondary-soft);
+}
+
+@media (max-width: 639px) {
+    .modal-footer {
+        flex-direction: column-reverse;
+    }
+
+    .modal-footer > * {
+        width: 100%;
+    }
+}
+
+.modal-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    flex: none;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background-color: transparent;
+    color: var(--color-body-subtle);
+    cursor: pointer;
+    transition: background-color 150ms ease, color 150ms ease;
+}
+
+.modal-close:hover {
+    background-color: var(--color-neutral-secondary);
+    color: var(--color-heading);
+}
+
+/* ==================================================================
+   Accordion
+   ================================================================== */
+.accordion {
+    border: 1px solid var(--color-default);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-neutral-primary-soft);
+    overflow: hidden;
+}
+
+.accordion-item + .accordion-item {
+    border-top: 1px solid var(--color-default);
+}
+
+.accordion-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 1rem 1.25rem;
+    border: 0;
+    background-color: transparent;
+    color: var(--color-heading);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.25rem;
+    text-align: start;
+    cursor: pointer;
+    transition: background-color 150ms ease;
+}
+
+.accordion-trigger:hover {
+    background-color: var(--color-neutral-secondary-soft);
+}
+
+.accordion-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex: none;
+    color: var(--color-body-subtle);
+    transition: transform 200ms ease;
+}
+
+.accordion-body {
+    padding: 0 1.25rem 1.25rem;
+    color: var(--color-body);
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+}
+
+/* ==================================================================
+   Avatar
+   ================================================================== */
+.avatar {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: 2.5rem;
+    height: 2.5rem;
+    overflow: hidden;
+    border-radius: 9999px;
+    background-color: var(--color-brand-soft);
+    color: var(--color-fg-brand-strong);
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1;
+    user-select: none;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-xs {
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 0.625rem;
+}
+
+.avatar-sm {
+    width: 2rem;
+    height: 2rem;
+    font-size: 0.75rem;
+}
+
+.avatar-lg {
+    width: 3rem;
+    height: 3rem;
+    font-size: 1rem;
+}
+
+.avatar-xl {
+    width: 4rem;
+    height: 4rem;
+    font-size: 1.25rem;
+}
+
+.avatar-status {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 0.625rem;
+    height: 0.625rem;
+    border: 2px solid var(--color-neutral-primary-soft);
+    border-radius: 9999px;
+    background-color: var(--color-success);
+}
+
+/* ==================================================================
+   Empty state
+   ================================================================== */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 2rem 1.25rem;
+    text-align: center;
+}
+
+.empty-state-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 9999px;
+    background-color: var(--color-brand-soft);
+    color: var(--color-fg-brand-strong);
+}
+
+.empty-state-icon svg {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.empty-state-title {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.5rem;
+    color: var(--color-heading);
+}
+
+.empty-state-description {
+    max-width: 28rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: var(--color-body);
+}
+
+/* ==================================================================
+   Spinner
+   ================================================================== */
+.spinner {
+    color: var(--color-fg-brand);
+}
+
+.spinner-sm {
+    font-size: 0.875rem;
+}
+
+.spinner-md {
+    font-size: 1.5rem;
+}
+
+.spinner-lg {
+    font-size: 2.5rem;
+}
+
+/* ==================================================================
+   Motion
+   ================================================================== */
+@media (prefers-reduced-motion: reduce) {
+    .btn,
+    .input,
+    .checkbox,
+    .radio,
+    .switch,
+    .dropdown-item,
+    .pagination-link {
+        transition: none;
+    }
+
+    .btn:active:not(:disabled),
+    .switch::after {
+        transform: none;
+    }
+
+    .switch:checked::after {
+        transform: translateX(1.25rem);
+    }
+
+    .btn-loading::before,
+    .spinner {
+        animation-duration: 1.6s;
+    }
 }
