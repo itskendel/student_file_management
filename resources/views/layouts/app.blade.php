@@ -513,7 +513,7 @@
 
                     {{-- Core Transaction --}}
                     <li>
-                        <a href="#"
+                        <a href="{{ route('students.index') }}"
                             class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                             <svg aria-hidden="true"
                                 class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -521,7 +521,7 @@
                                 <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
                                 <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
                             </svg>
-                            <span class="ml-3">Students</span>
+                            <span class="ml-3">Student</span>
                         </a>
                     </li>
 
@@ -534,7 +534,7 @@
                                 <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
                                 <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
                             </svg>
-                            <span class="ml-3">Sections</span>
+                            <span class="ml-3">Section</span>
                         </a>
                     </li>
 
@@ -774,7 +774,7 @@
             </div>
         </aside>
 
-        <main class="p-4 sm:ml-64 mt-14">
+        <main class="p-4 sm:ml-64 mt-17">
             @yield('content')
         </main>
     </div>

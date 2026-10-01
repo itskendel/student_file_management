@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\AcademicRecord;
+use App\Models\Student;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -17,9 +19,20 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        if (User::where('email', 'test@example.com')->doesntExist()) {
+            User::factory()->create([
+                'name' => 'Test User',
+                'email' => 'test@example.com',
+            ]);
+        }
+
+        $students = Student::factory(60)->create();
+
+        foreach ($students as $student) {
+            AcademicRecord::factory()
+                ->count(fake()->numberBetween(1, 3))
+                ->for($student)
+                ->create();
+        }
     }
 }

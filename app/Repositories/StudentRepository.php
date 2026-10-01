@@ -46,7 +46,15 @@ class StudentRepository
             }
         );
 
-        return $query->paginate($page);
+        return $query
+            ->with([
+                'academic_records' => fn ($q) => $q->latest('id'),
+                'academic_records.school_year',
+                'academic_records.grade_level',
+                'academic_records.strand',
+            ])
+            ->orderBy('first_name')
+            ->paginate($page);
     }
 
     public function store(array $data)
@@ -77,7 +85,8 @@ class StudentRepository
 
     public function show(int $id)
     {
-        return Student::findOrFail($id);
+        return Student::with(['academic_records.school_year', 'academic_records.grade_level', 'academic_records.strand'])
+            ->findOrFail($id);
     }
 
     public function update(Student $student, array $data)

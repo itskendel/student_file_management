@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Repositories\StudentRepository;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class StudentService
 {
@@ -49,8 +50,8 @@ class StudentService
     public function update(Request $request, int $id)
     {
         $data = $request->validate([
-            'student_id' => 'nullable|string|unique:students,student_id',
-            'lrn' => 'nullable|string|unique:students,lrn',
+            'student_id' => ['nullable', 'string', Rule::unique('students', 'student_id')->ignore($id)],
+            'lrn' => ['nullable', 'string', Rule::unique('students', 'lrn')->ignore($id)],
 
             'first_name' => 'required|string|max:255',
             'middle_name' => 'nullable|string|max:255',

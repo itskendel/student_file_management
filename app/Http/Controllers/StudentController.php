@@ -6,6 +6,7 @@ use App\Services\ConfigurationService;
 use App\Services\StudentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class StudentController extends Controller
 {
@@ -17,13 +18,11 @@ class StudentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
         try {
-            $students = $this->service_student->index();
-
-            return view('application.student.index', compact('students'));
+            return view('application.student.index');
         } catch (\Throwable $th) {
             //throw $th;
 
@@ -62,8 +61,12 @@ class StudentController extends Controller
             DB::commit();
 
             return redirect()->route('students.show', $student->id)->with('success', 'Student data has been store.');
+        } catch (ValidationException $e) {
+            DB::rollBack();
+
+            throw $e;
         } catch (\Throwable $th) {
-            //throw $th;
+            DB::rollBack();
 
             return redirect()->back()->withInput();
         }
@@ -77,7 +80,7 @@ class StudentController extends Controller
         try {
             $student = $this->service_student->show($id);
 
-            return view('application.student.edit', compact('student'));
+            return view('application.student.show', compact('student'));
         } catch (\Throwable $th) {
             //throw $th;
 
@@ -118,7 +121,13 @@ class StudentController extends Controller
             DB::commit();
 
             return redirect()->route('students.show', $student->id)->with('success', 'Student data has been saved.');
+        } catch (ValidationException $e) {
+            DB::rollBack();
+
+            throw $e;
         } catch (\Throwable $th) {
+            DB::rollBack();
+
             return redirect()->back()->withInput();
         }
     }
@@ -138,6 +147,8 @@ class StudentController extends Controller
             return redirect()->route('students.index')->with('success', 'Student data has been deleted.');
         } catch (\Throwable $th) {
             //throw $th;
+
+            DB::rollBack();
 
             return redirect()->back()->with('error', 'Failed to delete student data.');
         }
