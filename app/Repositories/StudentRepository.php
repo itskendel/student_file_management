@@ -17,9 +17,16 @@ class StudentRepository
                     ->orWhere('last_name', 'LIKE', "%{$search}%")
                     ->orWhere('student_id', 'LIKE', "%{$search}%")
                     ->orWhere('lrn', 'LIKE', "%{$search}%")
-                    ->orWhereHas('academic_records', function ($qp) use ($search) {
-                        $qp->where('section', 'LIKE', "%{$search}%");
-                    });
+                    ->orWhereRaw(
+                        "CONCAT(first_name, ' ', middle_name, ' ', last_name) LIKE ?",
+                        ["%{$search}%"]
+                    )
+                    ->orWhereRaw(
+                        "CONCAT(last_name, ' ', first_name) LIKE ?",
+                        ["%{$search}%"]
+                    );
+            })->orWhereHas('academic_records', function ($qq) use ($search) {
+                $qq->where('section', 'LIKE', "%{$search}%");
             });
         });
 
@@ -48,7 +55,7 @@ class StudentRepository
 
         return $query
             ->with([
-                'academic_records' => fn ($q) => $q->latest('id'),
+                'academic_records' => fn($q) => $q->latest('id'),
                 'academic_records.school_year',
                 'academic_records.grade_level',
                 'academic_records.strand',

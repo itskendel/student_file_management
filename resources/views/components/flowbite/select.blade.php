@@ -45,7 +45,7 @@
         @if ($hasError) aria-invalid="true" @endif
         @if (filled($describedBy)) aria-describedby="{{ $describedBy }}" @endif>
         @if (filled($placeholder))
-            <option value="" @selected(! $multiple && blank($currentValue)) @disabled(! $multiple)>
+            <option value="" @selected(! $multiple && blank($currentValue))>
                 {{ $placeholder }}
             </option>
         @endif
