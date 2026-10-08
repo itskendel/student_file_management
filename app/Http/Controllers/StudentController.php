@@ -153,4 +153,44 @@ class StudentController extends Controller
             return redirect()->back()->with('error', 'Failed to delete student data.');
         }
     }
+
+    public function create_file(Request $request)
+    {
+        try {
+            $file_types = $this->service_config->index_file_type();
+            $student = $this->service_student->show($request->student_id);
+
+            return view('application.student.create_file', compact('student', 'file_types'));
+        } catch (\Throwable $th) {
+            //throw $th;
+
+            return redirect()->back();
+        }
+    }
+
+    public function store_file(Request $request)
+    {
+        try {
+            $this->service_student->store_file($request);
+
+            return redirect()->route('students.show', $request->student_id);
+        } catch (\Throwable $th) {
+            //throw $th;
+
+            return redirect()->back();
+        }
+    }
+
+    public function destroy_file(int $file_id)
+    {
+        try {
+            $this->service_student->destroy_file($file_id);
+
+            return redirect()->route('students.index');
+        } catch (\Throwable $th) {
+            //throw $th;
+
+            return redirect()->back();
+        }
+    }
 }

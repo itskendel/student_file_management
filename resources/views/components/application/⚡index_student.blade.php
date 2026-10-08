@@ -97,7 +97,7 @@ new class extends Component {
         <div class="min-w-0">
             <h1 class="text-xl font-semibold text-heading sm:text-2xl">Students</h1>
             <p class="mt-1 text-sm text-body-subtle">
-                Student records.
+                Manage student records, academic information, and enrollment details.
             </p>
         </div>
 

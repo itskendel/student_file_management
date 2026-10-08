@@ -12,7 +12,7 @@
             @endif
 
             @if (filled($subtitle))
-                <p class="text-xs text-body-subtle mt-0.5">{{ $subtitle }}</p>
+                <p class="text-xs text-body-subtle mt-1">{{ $subtitle }}</p>
             @endif
 
             {{ $slot }}

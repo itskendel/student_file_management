@@ -2,31 +2,96 @@
 
 namespace App\Repositories;
 
+use App\Models\AcademicRecord;
+use App\Models\GradeLevel;
+use App\Models\SchoolYear;
+use App\Models\Strand;
 use App\Models\Student;
+use App\Models\StudentFile;
+use Illuminate\Support\Str;
 
 class StudentRepository
 {
+    public function analytics(): array
+    {
+        return [
+            'totals' => [
+                'students' => Student::count(),
+                'enrollments' => AcademicRecord::distinct('student_id')->count(),
+                'strands' => Strand::count(),
+                'documents' => StudentFile::count(),
+            ],
+            'per_school_year' => $this->students_per(SchoolYear::class),
+            'per_strand' => $this->students_per(Strand::class, 'students'),
+            'per_grade_level' => $this->students_per(GradeLevel::class),
+            'per_sex' => $this->students_by_sex(),
+        ];
+    }
+
+    private function students_per(string $model, string $order_by = 'id'): array
+    {
+        $table = (new $model)->getTable();
+        $foreign_key = Str::snake(class_basename($model)).'_id';
+
+        $query = $model::query()
+            ->select("{$table}.id", "{$table}.name")
+            ->selectSub(
+                AcademicRecord::selectRaw('COUNT(DISTINCT student_id)')
+                    ->whereColumn($foreign_key, "{$table}.id"),
+                'students'
+            );
+
+        $query = $order_by === 'students'
+            ? $query->orderByDesc('students')->orderBy("{$table}.name")
+            : $query->orderBy("{$table}.id");
+
+        return $query->get()
+            ->map(fn ($row) => [
+                'name' => $row->name,
+                'students' => (int) $row->students,
+            ])
+            ->all();
+    }
+
+    private function students_by_sex(): array
+    {
+        return Student::query()
+            ->select('sex')
+            ->selectRaw('COUNT(*) as students')
+            ->groupBy('sex')
+            ->orderByDesc('students')
+            ->orderBy('sex')
+            ->get()
+            ->map(fn ($row) => [
+                'name' => $row->sex,
+                'students' => (int) $row->students,
+            ])
+            ->all();
+    }
+
     public function index(int $page = 10, ?string $search = null, array $filters = [])
     {
         $query = Student::query();
 
         $query->when($search, function ($q) use ($search) {
             $q->where(function ($qq) use ($search) {
-                $qq->where('first_name', 'LIKE', "%{$search}%")
-                    ->orWhere('middle_name', 'LIKE', "%{$search}%")
-                    ->orWhere('last_name', 'LIKE', "%{$search}%")
-                    ->orWhere('student_id', 'LIKE', "%{$search}%")
-                    ->orWhere('lrn', 'LIKE', "%{$search}%")
-                    ->orWhereRaw(
-                        "CONCAT(first_name, ' ', middle_name, ' ', last_name) LIKE ?",
-                        ["%{$search}%"]
-                    )
-                    ->orWhereRaw(
-                        "CONCAT(last_name, ' ', first_name) LIKE ?",
-                        ["%{$search}%"]
-                    );
-            })->orWhereHas('academic_records', function ($qq) use ($search) {
-                $qq->where('section', 'LIKE', "%{$search}%");
+                $qq->where(function ($inner) use ($search) {
+                    $inner->where('first_name', 'LIKE', "%{$search}%")
+                        ->orWhere('middle_name', 'LIKE', "%{$search}%")
+                        ->orWhere('last_name', 'LIKE', "%{$search}%")
+                        ->orWhere('student_id', 'LIKE', "%{$search}%")
+                        ->orWhere('lrn', 'LIKE', "%{$search}%")
+                        ->orWhereRaw(
+                            "CONCAT(first_name, ' ', middle_name, ' ', last_name) LIKE ?",
+                            ["%{$search}%"]
+                        )
+                        ->orWhereRaw(
+                            "CONCAT(last_name, ' ', first_name) LIKE ?",
+                            ["%{$search}%"]
+                        );
+                })->orWhereHas('academic_records', function ($qq) use ($search) {
+                    $qq->where('section', 'LIKE', "%{$search}%");
+                });
             });
         });
 
@@ -55,7 +120,7 @@ class StudentRepository
 
         return $query
             ->with([
-                'academic_records' => fn($q) => $q->latest('id'),
+                'academic_records' => fn ($q) => $q->latest('id'),
                 'academic_records.school_year',
                 'academic_records.grade_level',
                 'academic_records.strand',
@@ -94,6 +159,11 @@ class StudentRepository
     {
         return Student::with(['academic_records.school_year', 'academic_records.grade_level', 'academic_records.strand'])
             ->findOrFail($id);
+    }
+
+    public function show_by_student_number(string $student_number)
+    {
+        return Student::where('student_id', $student_number)->firstOrFail();
     }
 
     public function update(Student $student, array $data)

@@ -75,7 +75,7 @@
                         @foreach ($personal as $field)
                             <div class="min-w-0">
                                 <dt class="text-xs text-body-subtle">{{ $field['label'] }}</dt>
-                                <dd class="mt-0.5 text-sm break-words text-heading">
+                                <dd class="mt-1 text-sm break-words text-heading">
                                     @if (filled($field['value']))
                                         {{ $field['value'] }}
                                     @else
@@ -99,7 +99,7 @@
                         @foreach ($contact as $field)
                             <div class="min-w-0 {{ $field['label'] === 'Address' ? 'sm:col-span-2' : '' }}">
                                 <dt class="text-xs text-body-subtle">{{ $field['label'] }}</dt>
-                                <dd class="mt-0.5 text-sm break-words text-heading">
+                                <dd class="mt-1 text-sm break-words text-heading">
                                     @if (filled($field['value']))
                                         {{ $field['value'] }}
                                     @else
@@ -113,48 +113,8 @@
             </x-flowbite.card>
         </div>
 
-        <x-flowbite.card>
-            <x-slot:header>
-                <x-flowbite.card-header title="Academic Information"
-                    subtitle="School year, grade level, strand and section assignments." />
-            </x-slot:header>
+        @livewire('application.index_academic_record', ['student' => $student])
 
-            @if ($student->academic_records->isEmpty())
-                <x-flowbite.card-body>
-                    <x-flowbite.empty-state title="No academic records"
-                        description="This student has no school year, grade level, strand or section assignment yet."
-                        class="p-0">
-                    </x-flowbite.empty-state>
-                </x-flowbite.card-body>
-            @else
-                <x-flowbite.table :hover="false" caption="Academic records">
-                    <x-slot:header>
-                        <x-flowbite.table-header>School Year</x-flowbite.table-header>
-                        <x-flowbite.table-header>Grade Level</x-flowbite.table-header>
-                        <x-flowbite.table-header>Strand</x-flowbite.table-header>
-                        <x-flowbite.table-header>Section</x-flowbite.table-header>
-                    </x-slot:header>
-
-                    <x-slot:body>
-                        @foreach ($student->academic_records as $record)
-                            <tr>
-                                <x-flowbite.table-row>
-                                    {{ $record->school_year?->name ?? '—' }}
-                                </x-flowbite.table-row>
-                                <x-flowbite.table-row>
-                                    {{ $record->grade_level?->name ?? '—' }}
-                                </x-flowbite.table-row>
-                                <x-flowbite.table-row>
-                                    {{ $record->strand?->name ?? '—' }}
-                                </x-flowbite.table-row>
-                                <x-flowbite.table-row>
-                                    {{ filled($record->section) ? $record->section : '—' }}
-                                </x-flowbite.table-row>
-                            </tr>
-                        @endforeach
-                    </x-slot:body>
-                </x-flowbite.table>
-            @endif
-        </x-flowbite.card>
+        @livewire('application.index_file', ['student' => $student])
     </div>
 @endsection

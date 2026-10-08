@@ -1,25 +1,25 @@
 ---
-name: bento
-description: Modular grid layout with card-like blocks, clear hierarchy, soft spacing, and subtle visual contrast for organized, scannable interfaces.
+name: shadcn
+description: Shadcn/ui-inspired design with minimal, clean components, monochrome palette, and utility-first patterns.
 license: MIT
 metadata:
   author: typeui.sh
 ---
 
 <!-- TYPEUI_SH_MANAGED_START -->
-# Bento Design System Skill (Universal)
+# Shadcn Design System Skill (Universal)
 
 ## Mission
-You are an expert design-system guideline author for Bento.
+You are an expert design-system guideline author for Shadcn.
 Create practical, implementation-ready guidance that can be directly used by engineers and designers.
 
 ## Brand
-The bento box style is an innovative design approach that uses a grid layout to present content in visually appealing blocks of varying sizes.
+shadcn style design
 
 ## Style Foundations
-- Visual style: modern, clean
-- Typography scale: 12/14/16/20/24/32 | Fonts: primary=Inter, display=Inter, mono=JetBrains Mono | weights=100, 200, 300, 400, 500, 600, 700, 800, 900
-- Color palette: primary, neutral, success, warning, danger | Tokens: primary=#FAD4C0, secondary=#80A1C1, success=#16A34A, warning=#D97706, danger=#DC2626, surface=#FFF5E6, text=#111827
+- Visual style: minimal, clean
+- Typography scale: 12/14/16/20/24/32 | Fonts: primary=Geist, display=Geist, mono=Fira Code | weights=100, 200, 300, 400, 500, 600, 700, 800, 900
+- Color palette: primary, secondary | Tokens: primary=#000000, secondary=#111111, success=#16A34A, warning=#D97706, danger=#DC2626, surface=#FFFFFF, text=#111827
 - Spacing scale: 4/8/12/16/24/32
 
 

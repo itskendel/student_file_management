@@ -15,19 +15,20 @@
 @source '../node_modules/flowbite';
 
 /* ==================================================================
-   Bento design tokens
+   Design tokens - shadcn monochrome theme
+   (.opencode/skills/design-system/SKILL.md)
    Single source of truth. These override Flowbite's default theme, so
    every `bg-*`, `text-*`, `border-*` token used by the components (and
    by Flowbite itself) resolves to the Bento palette. Components must
    reference these tokens, never raw hex values.
 
    THEME STATE
-   Dark is the default UI. Theme state is one class on <html> and
-   nothing else:
-       <html class="dark">   dark UI   (default, as shipped)
-       <html class="light">  light UI  (documented opt-out)
-   `.dark` carries no rules of its own - the tokens in @theme ARE the
-   dark palette - so `.light` holds the only light copy in this file.
+   Light is the default UI (skill: surface #FFFFFF, text #111827).
+   Theme state is one class on <html> and nothing else:
+       <html>              light UI  (default, as shipped)
+       <html class="dark"> dark UI   (documented opt-in)
+   The tokens in @theme ARE the light palette, so `.dark` holds the only
+   dark copy in this file.
    Do not add a second copy of either palette: duplication is how the two
    drift apart, and a stray character in a duplicated block once turned
    `.btn` into the dead descendant selector `n .btn`.
@@ -35,8 +36,11 @@
    @custom-variant below) so utilities and tokens can never disagree.
 
    Contrast: every text-on-background pairing below is verified at or
-   above WCAG 2.2 AA (4.5:1 text, 3:1 UI boundaries). Filled brand
-   surfaces are the one exception to "ink follows the theme" - see
+   above WCAG 2.2 AA (4.5:1 text, 3:1 UI boundaries). Status colors use
+   the skill hexes (#16A34A / #D97706 / #DC2626) as fills, icons and
+   interactive borders (>=3:1 on the surface); text on a tinted
+   background always uses the fg-* ramp (>=4.5:1). Filled brand surfaces
+   are the one exception to "ink follows the theme" - see
    --color-bento-on-brand.
    ================================================================== */
 
@@ -45,11 +49,11 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-    --font-body: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Geist', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-body: 'Geist', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-mono: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
 
     /* Typography scale — 12 / 14 / 16 / 20 / 24 / 32 */
-    --text-2xs: 0.625rem;
     --text-xs: 0.75rem;
     --text-sm: 0.875rem;
     --text-base: 1rem;
@@ -65,244 +69,100 @@
     --radius-lg: 16px;
     --radius-bento: 0.75rem;
 
-    /* --- Core palette (dark = the default UI) ---
-       Canvas is the deepest tone and sits one step below the card
-       surface, so cards keep the same "lifted" hierarchy they have in
-       light mode instead of sinking into the page. */
-    --color-bento-canvas: #0d0b0a;
-    --color-bento-surface: #1c1917;
-    --color-bento-surface-hover: #26211c;
-    --color-bento-surface-active: #322b24;
-    --color-bento-ink: #faf7f2;
-    --color-bento-ink-muted: #a8a29e;
-    --color-bento-border: #3e362d;
-    --color-bento-border-strong: #4a4136;
-    --color-bento-disabled-bg: #322b24;
-    --color-bento-disabled-fg: #8a7d6b;
-
-    /* --- Text roles --- */
-    --color-heading: #faf7f2;
-    --color-body: #d8d2c8;
-    --color-body-subtle: #a8a29e;
-
-    /* --- Brand ---
-       The fill is a light tint, so brand *text* uses a pale ramp here to
-       stay above 4.5:1 on the dark surfaces. */
-    --color-brand-softer: #26211c;
-    --color-brand-soft: #322b24;
-    --color-brand: #f5c1a4;
-    --color-brand-medium: #eeb086;
-    --color-brand-strong: #e8a781;
-    --color-brand-light: #f5c1a4;
-    --color-fg-brand-subtle: #f7d9c2;
-    --color-fg-brand: #f5c1a4;
-    --color-fg-brand-strong: #fad4c0;
-
-    /* --- Status ---
-       `*-soft` is the background, the base color is the text/border.
-       In dark the base token is the light end of the ramp so it is safe
-       as `text-*` on a dark surface and as a `border-*`. */
-    --color-success-soft: #052e16;
-    --color-success-medium: #14532d;
-    --color-success: #86efac;
-    --color-success-strong: #bbf7d0;
-    --color-success-subtle: #14532d;
-    --color-fg-success: #86efac;
-    --color-fg-success-strong: #bbf7d0;
-
-    --color-warning-soft: #451a03;
-    --color-warning-medium: #78350f;
-    --color-warning: #fcd34d;
-    --color-warning-strong: #fde68a;
-    --color-warning-subtle: #78350f;
-    --color-fg-warning: #fcd34d;
-    --color-fg-warning-subtle: #fbbf24;
-    --color-fg-warning-strong: #fde68a;
-
-    --color-danger-soft: #450a0a;
-    --color-danger-medium: #7f1d1d;
-    --color-danger: #fca5a5;
-    --color-danger-strong: #fecaca;
-    --color-danger-subtle: #7f1d1d;
-    --color-fg-danger: #fca5a5;
-    --color-fg-danger-strong: #fecaca;
-
-    --color-fg-yellow: #fcd34d;
-    --color-fg-disabled: #5c5145;
-    --color-disabled: #322b24;
-
-    /* --- Neutral surfaces --- */
-    --color-neutral-primary-soft: #1c1917;
-    --color-neutral-primary: #171412;
-    --color-neutral-primary-medium: #26211c;
-    --color-neutral-primary-strong: #322b24;
-    --color-neutral-secondary-soft: #1f1b18;
-    --color-neutral-secondary: #26211c;
-    --color-neutral-secondary-medium: #322b24;
-    --color-neutral-secondary-strong: #3e362d;
-    --color-neutral-secondary-strongest: #4a4136;
-    --color-neutral-tertiary-soft: #26211c;
-    --color-neutral-tertiary: #322b24;
-    --color-neutral-tertiary-medium: #3e362d;
-    --color-neutral-quaternary: #4a4136;
-    --color-neutral-quaternary-medium: #5c5145;
-    --color-gray: #5c5145;
-
-    /* --- Borders ---
-       `default` is decorative only (cards, dividers).
-       `default-medium` is the form-control border and is the first step
-       that clears the 3:1 non-text contrast requirement. */
-    --color-buffer: #171412;
-    --color-buffer-medium: #1f1b18;
-    --color-buffer-strong: #26211c;
-    --color-muted: #322b24;
-    --color-light-subtle: #26211c;
-    --color-light: #322b24;
-    --color-light-medium: #3e362d;
-    --color-default-subtle: #3e362d;
-    --color-default: #4a4136;
-    --color-default-medium: #7c6f5f;
-    --color-default-strong: #9c8d7a;
-    --color-brand-subtle: #78350f;
-
-    --color-dark-soft: #3e362d;
-    --color-dark: #26211c;
-    --color-dark-strong: #1c1917;
-    --color-dark-subtle: #5c5145;
-    --color-dark-backdrop: #0d0b0a;
-
-    /* --- Non-flipping brand fills ---
-       These stay light tints in BOTH themes, so ink drawn on top of them
-       must not follow the theme. MUST use --color-bento-on-brand for the
-       foreground of any filled brand surface: using --color-bento-ink
-       would put near-white text on a peach fill (~1.3:1) in dark. */
-    --color-bento-primary: #fad4c0;
-    --color-bento-primary-hover: #f5c1a4;
-    --color-bento-primary-active: #eeb086;
-    --color-bento-secondary: #80a1c1;
-    --color-bento-secondary-hover: #7296b5;
-    --color-bento-secondary-active: #6e92b4;
-    --color-bento-on-brand: #111827;
-
-    /* --- Warm neutral ramp ---
-       Migration note: Flowbite's palette supplied these before. They are
-       warm-tinted now so the shell cannot reintroduce the cool blue-grey
-       it used to sit against the Bento surfaces. Static (not theme-flipping)
-       because callers pair them explicitly with `dark:` utilities. */
-    --color-gray-50: #faf7f2;
-    --color-gray-100: #f4efe7;
-    --color-gray-200: #e7dfd2;
-    --color-gray-300: #d3c8b5;
-    --color-gray-400: #a89b87;
-    --color-gray-500: #8a7d6b;
-    --color-gray-600: #6b6153;
-    --color-gray-700: #4a4136;
-    --color-gray-800: #322b24;
-    --color-gray-900: #26211c;
-    --color-gray-950: #1c1917;
-
-    /* --- Brand ramp (replaces Flowbite's blue `primary`) --- */
-    --color-primary-50: #fff5e6;
-    --color-primary-100: #fbead2;
-    --color-primary-200: #fad4c0;
-    --color-primary-300: #f5c1a4;
-    --color-primary-400: #eeb086;
-    --color-primary-500: #e8a781;
-    --color-primary-600: #d3855a;
-    --color-primary-700: #b36640;
-    --color-primary-800: #8f4e31;
-    --color-primary-900: #6b3315;
-}
-
-/* Light UI - the single documented opt-out. Set <html class="light"> to use
-   it. Every flipping token is redeclared here, so this is the ONLY light
-   copy in the stylesheet. */
-.light {
-    /* --- Core palette --- */
-    --color-bento-canvas: #fff5e6;
-    --color-bento-primary: #fad4c0;
-    --color-bento-primary-hover: #f5c1a4;
-    --color-bento-primary-active: #eeb086;
-    --color-bento-secondary: #80a1c1;
-    --color-bento-secondary-hover: #7296b5;
-    --color-bento-secondary-active: #6e92b4;
-    --color-bento-surface: #fff5e6;
-    --color-bento-surface-hover: #fbead2;
-    --color-bento-surface-active: #f7dfc0;
+    /* --- Core palette (light = the default UI) ---
+       Skill surface is #FFFFFF, so white cards sit on a canvas one step
+       below them (#fafafa): bento blocks keep the same "lifted"
+       hierarchy without heavier shadows. */
+    --color-bento-canvas: #fafafa;
+    --color-bento-surface: #ffffff;
+    --color-bento-surface-hover: #f5f5f5;
+    --color-bento-surface-active: #ececef;
     --color-bento-ink: #111827;
-    --color-bento-ink-muted: #4b5563;
-    --color-bento-border: #e7dfd2;
-    --color-bento-border-strong: #d3c8b5;
-    --color-bento-disabled-bg: #f1ede4;
-    --color-bento-disabled-fg: #8a8278;
+    --color-bento-ink-muted: #6b7280;
+    --color-bento-border: #e5e7eb;
+    --color-bento-border-strong: #d1d5db;
+    --color-bento-disabled-bg: #f3f4f6;
+    --color-bento-disabled-fg: #9ca3af;
 
     /* --- Text roles --- */
     --color-heading: #111827;
-    --color-body: #4b5563;
-    --color-body-subtle: #65605a;
+    --color-body: #374151;
+    --color-body-subtle: #6b7280;
 
-    /* --- Brand ---
-       The primary is a light tint, so brand *text* uses a deep terracotta
-       ramp to stay above 4.5:1 on every brand background. */
-    --color-brand-softer: #fff5e6;
-    --color-brand-soft: #fbead2;
-    --color-brand: #fad4c0;
-    --color-brand-medium: #f5c1a4;
-    --color-brand-strong: #eeb086;
-    --color-brand-light: #7a3d1c;
-    --color-fg-brand-subtle: #8a4b26;
-    --color-fg-brand: #7a3d1c;
-    --color-fg-brand-strong: #6b3315;
+    /* --- Brand fills (skill: primary #000000, secondary #111111) ---
+       These flip with the theme (black fill in light UI, white fill in
+       dark UI). MUST use --color-bento-on-brand for the foreground of
+       any filled brand surface: --color-bento-ink would be near-black
+       text on a black fill. */
+    --color-bento-primary: #000000;
+    --color-bento-primary-hover: #262626;
+    --color-bento-primary-active: #404040;
+    --color-bento-secondary: #111111;
+    --color-bento-on-brand: #ffffff;
+
+    /* --- Brand text / emphasis ramp (monochrome) ---
+       Brand fills in light UI are light tints, so brand *text* uses the
+       near-black end of the ramp to stay above 4.5:1. */
+    --color-brand-softer: #f9fafb;
+    --color-brand-soft: #f3f4f6;
+    --color-brand: #111827;
+    --color-brand-medium: #1f2937;
+    --color-brand-strong: #374151;
+    --color-brand-light: #6b7280;
+    --color-fg-brand-subtle: #374151;
+    --color-fg-brand: #1f2937;
+    --color-fg-brand-strong: #111827;
 
     /* --- Status ---
-       `*-soft` is the background, the base color is the text/border.
-       Keeping the base token dark makes it safe both as `text-*`
-       on a light surface and as `bg-*` with white text. */
-    --color-success-soft: #dcfce7;
-    --color-success-medium: #c9f5d6;
-    --color-success: #14532d;
-    --color-success-strong: #14532d;
+       `*-soft` is the background, `*-subtle` is the decorative border on
+       badges/alerts, and the base color is the skill hex: used as a
+       fill, an icon or an interactive border (>=3:1). Labels on a
+       tinted background use the fg-* ramp so text clears 4.5:1. */
+    --color-success-soft: #f0fdf4;
+    --color-success-medium: #dcfce7;
+    --color-success: #16a34a;
+    --color-success-strong: #15803d;
     --color-success-subtle: #86efac;
-    --color-fg-success: #14532d;
+    --color-fg-success: #15803d;
     --color-fg-success-strong: #14532d;
 
-    --color-warning-soft: #fef3c7;
-    --color-warning-medium: #fde9b0;
-    --color-warning: #92400e;
+    --color-warning-soft: #fffbeb;
+    --color-warning-medium: #fef3c7;
+    --color-warning: #d97706;
     --color-warning-strong: #92400e;
     --color-warning-subtle: #fcd34d;
     --color-fg-warning: #92400e;
-    --color-fg-warning-subtle: #d97706;
-    --color-fg-warning-strong: #92400e;
+    --color-fg-warning-subtle: #b45309;
+    --color-fg-warning-strong: #78350f;
 
-    --color-danger-soft: #fee2e2;
-    --color-danger-medium: #fcd5d5;
-    --color-danger: #991b1b;
-    --color-danger-strong: #991b1b;
+    --color-danger-soft: #fef2f2;
+    --color-danger-medium: #fee2e2;
+    --color-danger: #dc2626;
+    --color-danger-strong: #b91c1c;
     --color-danger-subtle: #fca5a5;
-    --color-fg-danger: #991b1b;
+    --color-fg-danger: #b91c1c;
     --color-fg-danger-strong: #991b1b;
 
-    --color-fg-yellow: #92400e;
+    --color-fg-yellow: #b45309;
     --color-fg-disabled: #9ca3af;
-    --color-disabled: #f1ede4;
+    --color-disabled: #f3f4f6;
 
-    /* --- Neutral surfaces (warm-tinted to sit on the bento surface) --- */
+    /* --- Neutral surfaces (cool grey, sitting on the white surface) --- */
     --color-neutral-primary-soft: #ffffff;
     --color-neutral-primary: #ffffff;
-    --color-neutral-primary-medium: #fff5e6;
-    --color-neutral-primary-strong: #fbead2;
-    --color-neutral-secondary-soft: #fff9ef;
-    --color-neutral-secondary: #fff5e6;
-    --color-neutral-secondary-medium: #fbead2;
-    --color-neutral-secondary-strong: #f7dfc0;
-    --color-neutral-secondary-strongest: #f2e7d3;
-    --color-neutral-tertiary-soft: #fbead2;
-    --color-neutral-tertiary: #f7dfc0;
-    --color-neutral-tertiary-medium: #f2e7d3;
-    --color-neutral-quaternary: #e7dfd2;
-    --color-neutral-quaternary-medium: #d3c8b5;
-    --color-gray: #d3c8b5;
+    --color-neutral-primary-medium: #f9fafb;
+    --color-neutral-primary-strong: #f3f4f6;
+    --color-neutral-secondary-soft: #f9fafb;
+    --color-neutral-secondary: #f3f4f6;
+    --color-neutral-secondary-medium: #e5e7eb;
+    --color-neutral-secondary-strong: #d1d5db;
+    --color-neutral-secondary-strongest: #9ca3af;
+    --color-neutral-tertiary-soft: #f3f4f6;
+    --color-neutral-tertiary: #e5e7eb;
+    --color-neutral-tertiary-medium: #d1d5db;
+    --color-neutral-quaternary: #9ca3af;
+    --color-neutral-quaternary-medium: #6b7280;
+    --color-gray: #d1d5db;
 
     /* --- Borders ---
        `default` is decorative only (cards, dividers).
@@ -311,26 +171,162 @@
     --color-buffer: #ffffff;
     --color-buffer-medium: #ffffff;
     --color-buffer-strong: #ffffff;
-    --color-muted: #f7dfc0;
-    --color-light-subtle: #f2e7d3;
-    --color-light: #f7dfc0;
-    --color-light-medium: #f2e7d3;
-    --color-default-subtle: #efe7da;
-    --color-default: #d3c8b5;
-    --color-default-medium: #92856d;
-    --color-default-strong: #7a6e5b;
-    --color-brand-subtle: #f5c1a4;
+    --color-muted: #e5e7eb;
+    --color-light-subtle: #f3f4f6;
+    --color-light: #e5e7eb;
+    --color-light-medium: #d1d5db;
+    --color-default-subtle: #f3f4f6;
+    --color-default: #e5e7eb;
+    --color-default-medium: #6b7280;
+    --color-default-strong: #4b5563;
+    --color-brand-subtle: #d1d5db;
 
-    --color-dark-soft: #3e362d;
-    --color-dark: #26211c;
-    --color-dark-strong: #1c1917;
-    --color-dark-subtle: #4a4136;
-    --color-dark-backdrop: #120f0d;
+    /* --- Static dark accents (never flip with the theme) --- */
+    --color-dark-soft: #52525b;
+    --color-dark: #3f3f46;
+    --color-dark-strong: #27272a;
+    --color-dark-subtle: #71717a;
+    --color-dark-backdrop: #09090b;
+
+    /* --- Grey ramp (replaces Flowbite's palette). Static because
+       callers pair them explicitly with `dark:` utilities. --- */
+    --color-gray-50: #f9fafb;
+    --color-gray-100: #f3f4f6;
+    --color-gray-200: #e5e7eb;
+    --color-gray-300: #d1d5db;
+    --color-gray-400: #9ca3af;
+    --color-gray-500: #6b7280;
+    --color-gray-600: #4b5563;
+    --color-gray-700: #374151;
+    --color-gray-800: #1f2937;
+    --color-gray-900: #111827;
+    --color-gray-950: #030712;
+
+    /* --- Brand ramp (replaces Flowbite's blue `primary`) --- */
+    --color-primary-50: #fafafa;
+    --color-primary-100: #f5f5f5;
+    --color-primary-200: #e5e7eb;
+    --color-primary-300: #d1d5db;
+    --color-primary-400: #9ca3af;
+    --color-primary-500: #6b7280;
+    --color-primary-600: #4b5563;
+    --color-primary-700: #374151;
+    --color-primary-800: #1f2937;
+    --color-primary-900: #111827;
+}
+
+/* Dark UI - the single documented opt-in. Set <html class="dark"> to use
+   it. Every flipping token is redeclared here, so this is the ONLY dark
+   copy in the stylesheet. */
+.dark {
+    /* --- Core palette --- */
+    --color-bento-canvas: #09090b;
+    --color-bento-primary: #fafafa;
+    --color-bento-primary-hover: #e4e4e7;
+    --color-bento-primary-active: #d4d4d8;
+    --color-bento-secondary: #f5f5f5;
+    --color-bento-surface: #18181b;
+    --color-bento-surface-hover: #27272a;
+    --color-bento-surface-active: #3f3f46;
+    --color-bento-ink: #fafafa;
+    --color-bento-ink-muted: #a1a1aa;
+    --color-bento-border: #27272a;
+    --color-bento-border-strong: #3f3f46;
+    --color-bento-disabled-bg: #27272a;
+    --color-bento-disabled-fg: #71717a;
+
+    /* --- Text roles --- */
+    --color-heading: #fafafa;
+    --color-body: #d4d4d8;
+    --color-body-subtle: #a1a1aa;
+
+    /* --- Brand fills (dark inverts the pair: near-white fill, near-black
+       ink) - still read through --color-bento-on-brand, so callers
+       never change. */
+    --color-bento-on-brand: #09090b;
+
+    /* --- Brand text / emphasis ramp (monochrome) --- */
+    --color-brand-softer: #18181b;
+    --color-brand-soft: #27272a;
+    --color-brand: #e4e4e7;
+    --color-brand-medium: #d4d4d8;
+    --color-brand-strong: #a1a1aa;
+    --color-brand-light: #71717a;
+    --color-fg-brand-subtle: #a1a1aa;
+    --color-fg-brand: #e4e4e7;
+    --color-fg-brand-strong: #fafafa;
+
+    /* --- Status ---
+       Same anatomy as light UI: the base color stays the skill hex
+       (>=3:1 on these dark surfaces) and the fg-* ramp carries text
+       so labels clear 4.5:1. */
+    --color-success-soft: #052e16;
+    --color-success-medium: #14532d;
+    --color-success: #16a34a;
+    --color-success-strong: #4ade80;
+    --color-success-subtle: #14532d;
+    --color-fg-success: #86efac;
+    --color-fg-success-strong: #bbf7d0;
+
+    --color-warning-soft: #451a03;
+    --color-warning-medium: #78350f;
+    --color-warning: #d97706;
+    --color-warning-strong: #fbbf24;
+    --color-warning-subtle: #78350f;
+    --color-fg-warning: #fcd34d;
+    --color-fg-warning-subtle: #fbbf24;
+    --color-fg-warning-strong: #fde68a;
+
+    --color-danger-soft: #450a0a;
+    --color-danger-medium: #7f1d1d;
+    --color-danger: #dc2626;
+    --color-danger-strong: #f87171;
+    --color-danger-subtle: #7f1d1d;
+    --color-fg-danger: #fca5a5;
+    --color-fg-danger-strong: #fecaca;
+
+    --color-fg-yellow: #fcd34d;
+    --color-fg-disabled: #71717a;
+    --color-disabled: #27272a;
+
+    /* --- Neutral surfaces (dark greys, sitting on the dark surface) --- */
+    --color-neutral-primary-soft: #18181b;
+    --color-neutral-primary: #18181b;
+    --color-neutral-primary-medium: #1f1f23;
+    --color-neutral-primary-strong: #27272a;
+    --color-neutral-secondary-soft: #1f1f23;
+    --color-neutral-secondary: #27272a;
+    --color-neutral-secondary-medium: #3f3f46;
+    --color-neutral-secondary-strong: #52525b;
+    --color-neutral-secondary-strongest: #71717a;
+    --color-neutral-tertiary-soft: #27272a;
+    --color-neutral-tertiary: #3f3f46;
+    --color-neutral-tertiary-medium: #52525b;
+    --color-neutral-quaternary: #71717a;
+    --color-neutral-quaternary-medium: #a1a1aa;
+    --color-gray: #52525b;
+
+    /* --- Borders ---
+       `default` is decorative only (cards, dividers).
+       `default-medium` is the form-control border and is the first step
+       that clears the 3:1 non-text contrast requirement. */
+    --color-buffer: #18181b;
+    --color-buffer-medium: #18181b;
+    --color-buffer-strong: #18181b;
+    --color-muted: #3f3f46;
+    --color-light-subtle: #27272a;
+    --color-light: #3f3f46;
+    --color-light-medium: #52525b;
+    --color-default-subtle: #27272a;
+    --color-default: #3f3f46;
+    --color-default-medium: #71717a;
+    --color-default-strong: #a1a1aa;
+    --color-brand-subtle: #3f3f46;
 }
 
 /* ==================================================================
    Page surface
-   The canvas is the deepest tone; every card, input, menu and panel sits
+   The canvas is the page tone; every card, input, menu and panel sits
    on --color-neutral-primary-soft one step above it. MUST NOT hardcode a
    background here - it has to follow the active theme token.
    ================================================================== */
@@ -404,7 +400,7 @@ body {
     --btn-h: 2rem;
     --btn-px: 0.75rem;
     --btn-fs: 0.75rem;
-    --btn-gap: 0.375rem;
+    --btn-gap: 0.25rem;
 }
 
 .btn-md {
@@ -418,7 +414,7 @@ body {
     --btn-h: 3rem;
     --btn-px: 1.5rem;
     --btn-fs: 1rem;
-    --btn-gap: 0.625rem;
+    --btn-gap: 0.75rem;
 }
 
 /* btn variants */
@@ -429,11 +425,14 @@ body {
     color: var(--color-bento-on-brand);
 }
 
+/* Filled grey chip: reads as a secondary action next to the solid
+   primary instead of duplicating it. Skill secondary (#111111) carries
+   the label; the chip background is the neutral ramp. */
 .btn-secondary {
-    --btn-hover-bg: var(--color-bento-secondary-hover);
-    --btn-active-bg: var(--color-bento-secondary-active);
-    background-color: var(--color-bento-secondary);
-    color: var(--color-bento-on-brand);
+    --btn-hover-bg: var(--color-neutral-secondary-strong);
+    --btn-active-bg: var(--color-neutral-secondary-strong);
+    background-color: var(--color-neutral-secondary-medium);
+    color: var(--color-bento-secondary);
 }
 
 .btn-tertiary {
@@ -452,8 +451,8 @@ body {
     --btn-hover-border: var(--color-success);
     --btn-active-border: var(--color-success);
     background-color: var(--color-success-soft);
-    border-color: var(--color-success-subtle);
-    color: var(--color-success);
+    border-color: var(--color-success);
+    color: var(--color-fg-success);
 }
 
 .btn-danger {
@@ -462,8 +461,8 @@ body {
     --btn-hover-border: var(--color-danger);
     --btn-active-border: var(--color-danger);
     background-color: var(--color-danger-soft);
-    border-color: var(--color-danger-subtle);
-    color: var(--color-danger);
+    border-color: var(--color-danger);
+    color: var(--color-fg-danger);
 }
 
 .btn-warning {
@@ -472,8 +471,8 @@ body {
     --btn-hover-border: var(--color-warning);
     --btn-active-border: var(--color-warning);
     background-color: var(--color-warning-soft);
-    border-color: var(--color-warning-subtle);
-    color: var(--color-warning);
+    border-color: var(--color-warning);
+    color: var(--color-fg-warning);
 }
 
 .btn-ghost {
@@ -625,6 +624,40 @@ body {
 }
 
 .select:disabled {
+    cursor: not-allowed;
+}
+
+/* Native file input: `.input` already supplies the shell, but Flowbite's
+   bundled base styles also target the picker button (offsetting it with a
+   negative margin and 2rem of inline padding). Restate it so the button
+   stays inside the control in both themes. */
+.input[type='file']::file-selector-button,
+.dark .input[type='file']::file-selector-button {
+    margin-inline-start: 0;
+    margin-inline-end: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    border: 1px solid var(--color-default-medium);
+    border-radius: var(--radius-sm);
+    background-color: var(--color-neutral-primary-medium);
+    color: var(--color-heading);
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    cursor: pointer;
+    transition: border-color 150ms ease, background-color 150ms ease;
+}
+
+.input[type='file']:hover:not(:disabled)::file-selector-button,
+.dark .input[type='file']:hover:not(:disabled)::file-selector-button {
+    border-color: var(--color-default-strong);
+    background-color: var(--color-neutral-primary-strong);
+}
+
+.input[type='file']:disabled::file-selector-button,
+.dark .input[type='file']:disabled::file-selector-button {
+    background-color: var(--color-bento-disabled-bg);
+    color: var(--color-bento-disabled-fg);
     cursor: not-allowed;
 }
 
@@ -819,7 +852,7 @@ body {
    ================================================================== */
 .label {
     display: inline-block;
-    margin-bottom: 0.375rem;
+    margin-bottom: 0.5rem;
     font-size: 0.875rem;
     font-weight: 500;
     line-height: 1.25rem;
@@ -828,12 +861,12 @@ body {
 
 .label-required::after {
     content: '*';
-    margin-inline-start: 0.125rem;
-    color: var(--color-danger);
+    margin-inline-start: 0.25rem;
+    color: var(--color-fg-danger);
 }
 
 .helper {
-    margin-top: 0.375rem;
+    margin-top: 0.5rem;
     font-size: 0.75rem;
     line-height: 1rem;
     color: var(--color-body-subtle);
@@ -843,10 +876,67 @@ body {
     display: flex;
     align-items: flex-start;
     gap: 0.25rem;
-    margin-top: 0.375rem;
+    margin-top: 0.5rem;
     font-size: 0.75rem;
     line-height: 1rem;
-    color: var(--color-danger);
+    color: var(--color-fg-danger);
+}
+
+/* ==================================================================
+   Sidebar navigation
+   Section labels and links for the app shell. Active state is a
+   modifier class (`.side-link-active`) so the shell can mark the
+   current route without repeating the whole hover stack.
+   ================================================================== */
+.side-label {
+    display: block;
+    padding: 0.5rem;
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-body-subtle);
+}
+
+.side-label:not(:first-child) {
+    margin-top: 1rem;
+}
+
+.side-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-base);
+    background-color: transparent;
+    color: var(--color-body);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    text-decoration: none;
+    transition: background-color 150ms ease, color 150ms ease;
+}
+
+.side-link:hover {
+    background-color: var(--color-neutral-tertiary);
+    color: var(--color-fg-brand);
+}
+
+.side-link:focus-visible {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px var(--color-neutral-primary-soft),
+        0 0 0 4px var(--color-bento-ink);
+}
+
+.side-link-active,
+.side-link-active:hover {
+    background-color: var(--color-neutral-tertiary);
+    color: var(--color-fg-brand-strong);
+    font-weight: 600;
 }
 
 /* ==================================================================
@@ -863,13 +953,7 @@ body {
 }
 
 .card-body {
-    padding: 1.25rem;
-}
-
-@media (min-width: 768px) {
-    .card-body {
-        padding: 1.5rem;
-    }
+    padding: 1.5rem;
 }
 
 .card-header,
@@ -879,14 +963,7 @@ body {
     justify-content: space-between;
     gap: 0.75rem;
     flex-wrap: wrap;
-    padding: 1rem 1.25rem;
-}
-
-@media (min-width: 768px) {
-    .card-header,
-    .card-footer {
-        padding-inline: 1.5rem;
-    }
+    padding: 1rem 1.5rem;
 }
 
 .card-header {
@@ -909,7 +986,7 @@ body {
 .dropdown-menu {
     z-index: 30;
     min-width: 12rem;
-    padding: 0.375rem;
+    padding: 0.5rem;
     background-color: var(--color-neutral-primary-soft);
     border: 1px solid var(--color-default);
     border-radius: var(--radius-bento);
@@ -949,7 +1026,7 @@ body {
 
 .dropdown-divider {
     height: 1px;
-    margin: 0.375rem 0;
+    margin: 0.5rem 0;
     background-color: var(--color-default);
 }
 
@@ -985,7 +1062,7 @@ body {
 }
 
 .table td {
-    padding: 0.875rem 1rem;
+    padding: 1rem;
 }
 
 .table tbody tr {
@@ -1042,14 +1119,14 @@ body {
 }
 
 .pagination-link-active {
-    background-color: var(--color-brand);
-    border-color: var(--color-brand);
-    color: var(--color-bento-ink);
+    background-color: var(--color-bento-primary);
+    border-color: var(--color-bento-primary);
+    color: var(--color-bento-on-brand);
 }
 
 .pagination-link-active:hover {
     background-color: var(--color-bento-primary-hover);
-    color: var(--color-bento-ink);
+    color: var(--color-bento-on-brand);
 }
 
 /* ==================================================================
@@ -1082,19 +1159,19 @@ body {
 .alert-success {
     background-color: var(--color-success-soft);
     border-color: var(--color-success-subtle);
-    color: var(--color-success);
+    color: var(--color-fg-success);
 }
 
 .alert-warning {
     background-color: var(--color-warning-soft);
     border-color: var(--color-warning-subtle);
-    color: var(--color-warning);
+    color: var(--color-fg-warning);
 }
 
 .alert-danger {
     background-color: var(--color-danger-soft);
     border-color: var(--color-danger-subtle);
-    color: var(--color-danger);
+    color: var(--color-fg-danger);
 }
 
 .alert-neutral {
@@ -1109,7 +1186,7 @@ body {
 
 .alert-dismiss {
     margin-inline-start: auto;
-    padding: 0.125rem;
+    padding: 0.25rem;
     border: 0;
     border-radius: var(--radius-xs);
     background-color: transparent;
@@ -1170,19 +1247,19 @@ body {
 .badge-success {
     background-color: var(--color-success-soft);
     border-color: var(--color-success-subtle);
-    color: var(--color-success);
+    color: var(--color-fg-success);
 }
 
 .badge-warning {
     background-color: var(--color-warning-soft);
     border-color: var(--color-warning-subtle);
-    color: var(--color-warning);
+    color: var(--color-fg-warning);
 }
 
 .badge-danger {
     background-color: var(--color-danger-soft);
     border-color: var(--color-danger-subtle);
-    color: var(--color-danger);
+    color: var(--color-fg-danger);
 }
 
 .badge-dot {
@@ -1214,7 +1291,7 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 0.25rem;
-    padding: 0.125rem 0.25rem;
+    padding: 0.25rem;
     border-radius: var(--radius-xs);
     color: var(--color-body-subtle);
     text-decoration: none;
@@ -1227,7 +1304,7 @@ body {
 }
 
 .breadcrumb-current {
-    padding: 0.125rem 0.25rem;
+    padding: 0.25rem;
     color: var(--color-heading);
     font-weight: 500;
 }
@@ -1295,7 +1372,7 @@ body {
     align-items: flex-start;
     justify-content: space-between;
     gap: 1rem;
-    padding: 1.25rem;
+    padding: 1.5rem;
     border-bottom: 1px solid var(--color-default);
 }
 
@@ -1307,7 +1384,7 @@ body {
 }
 
 .modal-body {
-    padding: 1.25rem;
+    padding: 1.5rem;
 }
 
 .modal-footer {
@@ -1316,7 +1393,7 @@ body {
     justify-content: flex-end;
     gap: 0.5rem;
     flex-wrap: wrap;
-    padding: 1.25rem;
+    padding: 1.5rem;
     border-top: 1px solid var(--color-default);
     background-color: var(--color-neutral-secondary-soft);
 }
@@ -1372,7 +1449,7 @@ body {
     justify-content: space-between;
     gap: 0.75rem;
     width: 100%;
-    padding: 1rem 1.25rem;
+    padding: 1rem 1.5rem;
     border: 0;
     background-color: transparent;
     color: var(--color-heading);
@@ -1398,7 +1475,7 @@ body {
 }
 
 .accordion-body {
-    padding: 0 1.25rem 1.25rem;
+    padding: 0 1.5rem 1.5rem;
     color: var(--color-body);
     font-size: 0.875rem;
     line-height: 1.5rem;
@@ -1475,7 +1552,7 @@ body {
     align-items: center;
     justify-content: center;
     gap: 0.75rem;
-    padding: 2rem 1.25rem;
+    padding: 2rem 1.5rem;
     text-align: center;
 }
 

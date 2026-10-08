@@ -11,11 +11,26 @@ class GradeLevelRepository
         return GradeLevel::all();
     }
 
-    public function store() {}
+    public function store(array $data)
+    {
+        return GradeLevel::create($data);
+    }
 
-    public function show() {}
+    public function show(int $id)
+    {
+        return GradeLevel::with(['academic_records.student', 'academic_records.school_year', 'academic_records.strand'])
+            ->findOrFail($id);
+    }
 
-    public function update() {}
+    public function update(GradeLevel $model, array $data)
+    {
+        $model->update($data);
 
-    public function destroy() {}
+        return $model;
+    }
+
+    public function destroy(GradeLevel $model)
+    {
+        return $model->delete();
+    }
 }
