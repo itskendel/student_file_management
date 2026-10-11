@@ -678,12 +678,11 @@ body {
     display: contents;
 }
 
-.input-group > .input {
+.input-group:has(.input-group-icon-start) > .input {
     padding-inline-start: 2.5rem;
 }
 
 .input-group-end > .input {
-    padding-inline-start: var(--ctl-px);
     padding-inline-end: 2.5rem;
 }
 

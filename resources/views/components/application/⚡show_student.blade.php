@@ -69,8 +69,8 @@ new class extends Component {
             </x-flowbite.card-body>
         @else
             <div>
-                <x-flowbite.table :hover="true" caption="Student assignments to {{ $title }}" striped class="transition-opacity"
-                    wire:loading.class="opacity-50">
+                <x-flowbite.table :hover="true" caption="Student assignments to {{ $title }}" striped
+                    class="transition-opacity" wire:loading.class="opacity-50">
                     <x-slot:header>
                         <x-flowbite.table-header>Student</x-flowbite.table-header>
                         <x-flowbite.table-header>Student Number</x-flowbite.table-header>
