@@ -5,8 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Models\Audit;
 
-class AcademicRecord extends Model
+class AcademicRecord extends AuditableModel
 {
     /** @use HasFactory<\Database\Factories\AcademicRecordFactory> */
     use HasFactory, SoftDeletes;

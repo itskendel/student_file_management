@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class StudentFile extends Model
+class StudentFile extends AuditableModel
 {
     /** @use HasFactory<\Database\Factories\StudentFileFactory> */
     use HasFactory, SoftDeletes;
