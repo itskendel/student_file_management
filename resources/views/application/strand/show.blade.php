@@ -70,5 +70,7 @@
 
             @livewire('application.show_student', ['strand_id' => (string) $strand->id])
         </div>
+
+        @livewire('application.show_audit', ['model' => 'Strand', 'model_id' => $strand->id])
     </div>
 @endsection

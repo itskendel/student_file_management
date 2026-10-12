@@ -261,6 +261,10 @@ new class extends Component {
                                 </x-flowbite.table-row>
 
                                 <x-flowbite.table-row align="end">
+                                    @php
+                                        $modal_id = 'modal-delete-student-' . $student->id;
+                                    @endphp
+
                                     <div class="flex items-center justify-end gap-2">
                                         <x-flowbite.button variant="ghost" size="sm" iconOnly :href="route('students.show', $student->id)">
                                             View
@@ -271,12 +275,33 @@ new class extends Component {
                                         </x-flowbite.button>
 
                                         <x-flowbite.button variant="ghost" size="sm" iconOnly
-                                            wire:click="destroy({{ $student->id }})"
-                                            wire:confirm="Delete the student data of {{ $student->name }}? This action cannot be undone."
-                                            wire:loading.attr="disabled" wire:target="destroy({{ $student->id }})">
+                                            data-modal-target="{{ $modal_id }}"
+                                            data-modal-toggle="{{ $modal_id }}">
                                             Delete
                                         </x-flowbite.button>
                                     </div>
+
+                                    <x-flowbite.modal id="{{ $modal_id }}" title="Confirmation">
+                                        <p>Are you sure you want to delete this student?</p>
+
+                                        <x-slot:footerSlot>
+                                            <div class="flex gap-2">
+                                                <x-flowbite.button variant="ghost" type="button"
+                                                    data-modal-hide="{{ $modal_id }}">
+                                                    No
+                                                </x-flowbite.button>
+
+                                                <form action="{{ route('students.destroy', $student->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+
+                                                    <x-flowbite.button variant="danger" type="submit">
+                                                        Yes, continue
+                                                    </x-flowbite.button>
+                                                </form>
+                                            </div>
+                                        </x-slot:footerSlot>
+                                    </x-flowbite.modal>
                                 </x-flowbite.table-row>
                             </tr>
                         @endforeach

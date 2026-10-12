@@ -116,5 +116,7 @@
         @livewire('application.index_academic_record', ['student' => $student])
 
         @livewire('application.index_file', ['student' => $student])
+
+        @livewire('application.show_audit', ['model' => 'Student', 'model_id' => $student->id])
     </div>
 @endsection

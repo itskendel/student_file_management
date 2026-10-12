@@ -51,8 +51,7 @@ new class extends Component {
         @if ($grade_levels->isEmpty())
             <x-flowbite.card-body>
                 <x-flowbite.empty-state title="No grade levels yet"
-                    description="Create the first grade level so students can be assigned to it."
-                    class="p-0">
+                    description="Create the first grade level so students can be assigned to it." class="p-0">
                     <x-flowbite.button :href="route('grade_levels.create')">New grade level</x-flowbite.button>
                 </x-flowbite.empty-state>
             </x-flowbite.card-body>
@@ -82,24 +81,47 @@ new class extends Component {
                             </x-flowbite.table-row>
 
                             <x-flowbite.table-row align="end">
+                                @php
+                                    $modal_id = 'modal-delete-grade-level-' . $grade_level->id;
+                                @endphp
+
                                 <div class="flex items-center justify-end gap-2">
-                                    <x-flowbite.button variant="ghost" size="sm" iconOnly
-                                        :href="route('grade_levels.show', $grade_level->id)">
+                                    <x-flowbite.button variant="ghost" size="sm" iconOnly :href="route('grade_levels.show', $grade_level->id)">
                                         View
                                     </x-flowbite.button>
 
-                                    <x-flowbite.button variant="ghost" size="sm" iconOnly
-                                        :href="route('grade_levels.edit', $grade_level->id)">
+                                    <x-flowbite.button variant="ghost" size="sm" iconOnly :href="route('grade_levels.edit', $grade_level->id)">
                                         Edit
                                     </x-flowbite.button>
 
                                     <x-flowbite.button variant="ghost" size="sm" iconOnly
-                                        wire:click="destroy({{ $grade_level->id }})"
-                                        wire:confirm="Delete the {{ $grade_level->desc }} grade level? This action cannot be undone."
-                                        wire:loading.attr="disabled" wire:target="destroy({{ $grade_level->id }})">
+                                        data-modal-target="{{ $modal_id }}" data-modal-toggle="{{ $modal_id }}">
                                         Delete
                                     </x-flowbite.button>
                                 </div>
+
+                                <x-flowbite.modal id="{{ $modal_id }}" title="Confirmation">
+                                    <p>Are you sure you want to delete this grade level?</p>
+
+                                    <x-slot:footerSlot>
+                                        <div class="flex gap-2">
+                                            <x-flowbite.button variant="ghost" type="button"
+                                                data-modal-hide="{{ $modal_id }}">
+                                                No
+                                            </x-flowbite.button>
+
+                                            <form action="{{ route('grade_levels.destroy', $grade_level->id) }}"
+                                                method="POST">
+                                                @csrf
+                                                @method('DELETE')
+
+                                                <x-flowbite.button variant="danger" type="submit">
+                                                    Yes, continue
+                                                </x-flowbite.button>
+                                            </form>
+                                        </div>
+                                    </x-slot:footerSlot>
+                                </x-flowbite.modal>
                             </x-flowbite.table-row>
                         </tr>
                     @endforeach

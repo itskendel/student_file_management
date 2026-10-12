@@ -70,6 +70,8 @@
             </x-flowbite.card>
 
             @livewire('application.show_student', ['school_year_id' => $school_year->id])
+
+            @livewire('application.show_audit', ['model' => 'SchoolYear', 'model_id' => $school_year->id])
         </div>
     </div>
 @endsection

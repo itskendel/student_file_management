@@ -51,8 +51,7 @@ new class extends Component {
         @if ($school_years->isEmpty())
             <x-flowbite.card-body>
                 <x-flowbite.empty-state title="No school years yet"
-                    description="Create the first school year so student records can be assigned to it."
-                    class="p-0">
+                    description="Create the first school year so student records can be assigned to it." class="p-0">
                     <x-flowbite.button :href="route('school_years.create')">New school year</x-flowbite.button>
                 </x-flowbite.empty-state>
             </x-flowbite.card-body>
@@ -82,24 +81,47 @@ new class extends Component {
                             </x-flowbite.table-row>
 
                             <x-flowbite.table-row align="end">
+                                @php
+                                    $modal_id = 'modal-delete-school-year-' . $school_year->id;
+                                @endphp
+
                                 <div class="flex items-center justify-end gap-2">
-                                    <x-flowbite.button variant="ghost" size="sm" iconOnly
-                                        :href="route('school_years.show', $school_year->id)">
+                                    <x-flowbite.button variant="ghost" size="sm" iconOnly :href="route('school_years.show', $school_year->id)">
                                         View
                                     </x-flowbite.button>
 
-                                    <x-flowbite.button variant="ghost" size="sm" iconOnly
-                                        :href="route('school_years.edit', $school_year->id)">
+                                    <x-flowbite.button variant="ghost" size="sm" iconOnly :href="route('school_years.edit', $school_year->id)">
                                         Edit
                                     </x-flowbite.button>
 
                                     <x-flowbite.button variant="ghost" size="sm" iconOnly
-                                        wire:click="destroy({{ $school_year->id }})"
-                                        wire:confirm="Delete the {{ $school_year->name }} school year? This action cannot be undone."
-                                        wire:loading.attr="disabled" wire:target="destroy({{ $school_year->id }})">
+                                        data-modal-target="{{ $modal_id }}" data-modal-toggle="{{ $modal_id }}">
                                         Delete
                                     </x-flowbite.button>
                                 </div>
+
+                                <x-flowbite.modal id="{{ $modal_id }}" title="Confirmation">
+                                    <p>Are you sure you want to delete this school year?</p>
+
+                                    <x-slot:footerSlot>
+                                        <div class="flex gap-2">
+                                            <x-flowbite.button variant="ghost" type="button"
+                                                data-modal-hide="{{ $modal_id }}">
+                                                No
+                                            </x-flowbite.button>
+
+                                            <form action="{{ route('school_years.destroy', $school_year->id) }}"
+                                                method="POST">
+                                                @csrf
+                                                @method('DELETE')
+
+                                                <x-flowbite.button variant="danger" type="submit">
+                                                    Yes, continue
+                                                </x-flowbite.button>
+                                            </form>
+                                        </div>
+                                    </x-slot:footerSlot>
+                                </x-flowbite.modal>
                             </x-flowbite.table-row>
                         </tr>
                     @endforeach

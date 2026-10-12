@@ -70,6 +70,8 @@
             </x-flowbite.card>
 
             @livewire('application.show_student', ['grade_level_id' => $grade_level->id])
+
+            @livewire('application.show_audit', ['model' => 'GradeLevel', 'model_id' => $grade_level->id])
         </div>
     </div>
 @endsection
