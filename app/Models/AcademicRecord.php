@@ -21,16 +21,19 @@ class AcademicRecord extends AuditableModel
 
     public function school_year()
     {
-        return $this->belongsTo(SchoolYear::class, 'school_year_id');
+        return $this->belongsTo(SchoolYear::class, 'school_year_id')
+            ->withTrashed();
     }
 
     public function grade_level()
     {
-        return $this->belongsTo(GradeLevel::class, 'grade_level_id');
+        return $this->belongsTo(GradeLevel::class, 'grade_level_id')
+            ->withTrashed();
     }
 
     public function strand()
     {
-        return $this->belongsTo(Strand::class, 'strand_id');
+        return $this->belongsTo(Strand::class, 'strand_id')
+            ->withTrashed();
     }
 }
